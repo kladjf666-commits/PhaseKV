@@ -1,0 +1,67 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen2.5-0.5B-Instruct",
+    "dtype": "float16",
+    "attn_implementation": "eager",
+    "prompt_len": 552,
+    "max_new_tokens": 32,
+    "kv_dims": {
+      "num_layers": 24,
+      "num_kv_heads": 2,
+      "head_dim": 64
+    },
+    "device": "cuda",
+    "greedy": true,
+    "preset": "custom"
+  },
+  "rows": [
+    {
+      "method": "full",
+      "kv_saving_pct": 0.1712328767123239,
+      "compression_ratio": 1.0017152658662092,
+      "peak_gpu_mb": 1181.500416,
+      "ttft_ms": 35.11648112908006,
+      "tpot_ms": 33.164406645922895,
+      "decode_tps": 30.152808421281865,
+      "token_match_vs_full": 1.0,
+      "perplexity": 1.7048518383685618,
+      "final_cache_bytes": 7163904,
+      "full_ref_cache_bytes": 7176192,
+      "num_generated": 32,
+      "text": " and benefit from cheap streaming policies. This document is used as a small offline corpus so that the perplexity smoke test can run without any network access. Large language",
+      "ppl_total_tokens": 1164
+    },
+    {
+      "method": "snapkv",
+      "kv_saving_pct": 66.26712328767124,
+      "compression_ratio": 2.964467005076142,
+      "peak_gpu_mb": 1385.179136,
+      "ttft_ms": 40.103062987327576,
+      "tpot_ms": 32.14895390274544,
+      "decode_tps": 31.105211168771575,
+      "token_match_vs_full": 0.3125,
+      "perplexity": 2.1871987503924717,
+      "final_cache_bytes": 2420736,
+      "full_ref_cache_bytes": 7176192,
+      "num_generated": 32,
+      "text": " and benefit from cheap streaming policies. This paper presents a novel approach to language model inference that is based on the idea of a \"prompt\" token. The prompt",
+      "ppl_total_tokens": 1164
+    },
+    {
+      "method": "pyramidkv",
+      "kv_saving_pct": 66.26712328767124,
+      "compression_ratio": 2.964467005076142,
+      "peak_gpu_mb": 1385.179136,
+      "ttft_ms": 41.425072588026524,
+      "tpot_ms": 32.93208379839216,
+      "decode_tps": 30.36552457846056,
+      "token_match_vs_full": 0.28125,
+      "perplexity": 1.9450832966540792,
+      "final_cache_bytes": 2420736,
+      "full_ref_cache_bytes": 7176192,
+      "num_generated": 32,
+      "text": " and benefit from cheap streaming policies. The model is trained on a large dataset of text, and the model is trained on a large dataset of text, and the",
+      "ppl_total_tokens": 1164
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+[run_longbench] phasekv 注入=True; 可用方法=['full', 'h2o', 'hetero', 'kivi', 'kvquant', 'phasekv', 'pyramidkv', 'recent', 'scope', 'segment_ablation', 'snapkv', 'streaming']
+Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:  25%|██▌       | 1/4 [00:00<00:02,  1.38it/s]Loading checkpoint shards:  50%|█████     | 2/4 [00:01<00:01,  1.38it/s]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:02<00:00,  1.40it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:02<00:00,  1.54it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:02<00:00,  1.48it/s]
+[run_longbench] 样本总数=60 任务=['narrativeqa', 'multifieldqa_en', 'hotpotqa', '2wikimqa', 'qasper'] 截断预算=1536 attn=eager
+[run_longbench] full: LB=10.6 省0.0629% 峰值16009.6MB
+[run_longbench] kivi: LB=12.6 省77.0883% 峰值16009.6MB
+[run_longbench] snapkv: LB=11.7 省69.1246% 峰值19715.7MB
+[run_longbench] scope: LB=10.6 省0.0629% 峰值19729.3MB
+[run_longbench] pyramidkv: LB=9.54 省69.0648% 峰值19715.2MB
+[run_longbench] phasekv: LB=13.65 省93.2603% 峰值19715.2MB
+### LongBench 任务分数 · /root/autodl-tmp/modelscope-cache/Qwen/Qwen2___5-7B-Instruct
+
+| 方法 | LongBench(qa_f1) | KV显存节省% | 峰值显存MB | TTFT(ms) | TPOT(ms) | 对full一致率 |
+| --- | --- | --- | --- | --- | --- | --- |
+| full | 10.6 | 0.0629 | 16010 | 335.05 | 32.16 | - |
+| kivi | 12.6 | 77.0883 | 16010 | 331.82 | 33.93 | 0.5999 |
+| snapkv | 11.7 | 69.1246 | 19716 | 331.95 | 32.36 | 0.7217 |
+| scope | 10.6 | 0.0629 | 19729 | 331.97 | 33.96 | 1.0 |
+| pyramidkv | 9.54 | 69.0648 | 19715 | 331.93 | 31.41 | 0.706 |
+| phasekv | 13.65 | 93.2603 | 19715 | 331.81 | 32.92 | 0.6458 |
+
+报告已保存: results/m1_longbench_7b.json / .md

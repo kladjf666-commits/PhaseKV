@@ -1,0 +1,582 @@
+{
+  "meta": {
+    "experiment": "roofline_characterization",
+    "gpu": "NVIDIA GeForce RTX 4080 SUPER",
+    "gpu_memory_GB": 33.8,
+    "compute_capability": "8.9",
+    "torch": "2.1.2+cu121",
+    "cuda": "12.1",
+    "measured_peak": {
+      "achievable_copy_GBps": 625.5,
+      "achievable_read_GBps": 686.1,
+      "achievable_fp16_TFLOPS": 110.2,
+      "empirical_ridge_flop_per_byte": 176.18
+    },
+    "nominal_peak": {
+      "hbm_bandwidth_GBps": 736.0,
+      "fp16_TFLOPS": 50.0,
+      "ridge_flop_per_byte": 67.93
+    },
+    "prompt_grid": [
+      512,
+      1024,
+      2048,
+      4096
+    ],
+    "context_grid": [
+      512,
+      1024,
+      2048,
+      4096,
+      8192,
+      16384
+    ],
+    "analytic_context_grid": [
+      512,
+      1024,
+      2048,
+      4096,
+      8192,
+      16384,
+      32768,
+      65536,
+      131072
+    ],
+    "batch_grid": [
+      1,
+      16,
+      64
+    ],
+    "dtype": "float16",
+    "note": "真实模型真实测量, 无模拟数据。A 硬件峰值=GPU 上微基准实测(copy/read 带宽, fp16 GEMM 吞吐); B 算术强度与 KV 占比=算子 FLOP/Byte 定义的精确解析量(非模拟实验), 来自真实模型 config; C 落点=真实加载模型计时所得有效吞吐。本图刻画 prefill/decode 硬件瓶颈差异(洞见1), 不报任何 kernel 加速比(那属阶段 B 真实 kernel)。"
+  },
+  "findings": {
+    "prefill": {
+      "max_compute_util_pct": 77.0,
+      "at_prompt_len": 4096,
+      "conclusion": "prefill 随 prompt 长度算力利用率从 15.6% 升至 77.0% (P=4096), 趋近实测 GEMM 峰值 => 计算受限, 与洞见 1 一致。"
+    },
+    "decode_measured": {
+      "model": "Qwen/Qwen2.5-0.5B-Instruct",
+      "latency_ms_range": [
+        26.687,
+        29.316
+      ],
+      "bandwidth_util_pct_range": [
+        5.7,
+        7.0
+      ],
+      "max_compute_util_pct": 0.0808,
+      "conclusion": "单步 decode 算力利用率最高仅 0.081% (远低于 prefill) => 明确*非*计算受限。此 0.49B 小模型上 延迟近似恒定 (27~29ms, 随上下文 32x 增长几乎不变) 且带宽利用 仅 6~7% => 受*固定单步开销*(逐层 kernel 启动/Python 循环)主导, 尚未饱和 HBM。"
+    },
+    "decode_bandwidth_bound_projection_7b": {
+      "weight_read_bytes_fp16": 15231233024,
+      "hbm_read_floor_ms_batch1": 24.4,
+      "kv_fraction_at_longest_ctx": {
+        "batch1": 0.3304,
+        "batch16": 0.8876,
+        "batch64": 0.9693
+      },
+      "longest_ctx": 131072,
+      "conclusion": "7B 单步 decode 仅读权重 (15.2GB) 即有 ~24ms HBM 底线 (实测 copy 带宽 625.5GB/s), 远超 0.5B 的固定开销 => 7B decode 必然带宽受限。KV 读占比随上下文与 batch 放大: ctx=131072 时 batch1=33%, batch16=89%, batch64=97% => 长上下文/批量下 KV 读流量成为 decode 带宽主因, 直接支撑压 KV 的收益 (洞见 1/2)。 实测 7B decode 落点待模型下载完成后用本脚本 --measured-model 7B 复跑。"
+    }
+  },
+  "hardware_roofline": {
+    "copy_sweep": [
+      {
+        "size_mb": 256,
+        "copy_GBps": 620.0
+      },
+      {
+        "size_mb": 512,
+        "copy_GBps": 623.2
+      },
+      {
+        "size_mb": 1024,
+        "copy_GBps": 625.5
+      }
+    ],
+    "read_sweep": [
+      {
+        "size_mb": 256,
+        "read_GBps": 659.2
+      },
+      {
+        "size_mb": 512,
+        "read_GBps": 680.0
+      },
+      {
+        "size_mb": 1024,
+        "read_GBps": 686.1
+      }
+    ],
+    "achievable_copy_GBps": 625.5,
+    "achievable_read_GBps": 686.1,
+    "gemm_sweep": [
+      {
+        "size": 2048,
+        "TFLOPS": 81.2
+      },
+      {
+        "size": 4096,
+        "TFLOPS": 102.2
+      },
+      {
+        "size": 8192,
+        "TFLOPS": 110.2
+      }
+    ],
+    "achievable_fp16_TFLOPS": 110.2
+  },
+  "analytic": {
+    "Qwen/Qwen2.5-0.5B-Instruct": {
+      "dims": {
+        "num_layers": 24,
+        "num_attention_heads": 14,
+        "num_kv_heads": 2,
+        "head_dim": 64
+      },
+      "param_count": 494032768,
+      "weight_bytes_fp16": 988065536,
+      "batch_grid": [
+        1,
+        16,
+        64
+      ],
+      "prefill_intensity": [
+        {
+          "prompt_len": 512,
+          "intensity_flop_per_byte": 3584.0,
+          "bound": "compute"
+        },
+        {
+          "prompt_len": 1024,
+          "intensity_flop_per_byte": 7168.0,
+          "bound": "compute"
+        },
+        {
+          "prompt_len": 2048,
+          "intensity_flop_per_byte": 14336.0,
+          "bound": "compute"
+        },
+        {
+          "prompt_len": 4096,
+          "intensity_flop_per_byte": 28672.0,
+          "bound": "compute"
+        }
+      ],
+      "decode_intensity": [
+        {
+          "context_len": 512,
+          "intensity_flop_per_byte": 7.0,
+          "bound": "bandwidth"
+        },
+        {
+          "context_len": 1024,
+          "intensity_flop_per_byte": 7.0,
+          "bound": "bandwidth"
+        },
+        {
+          "context_len": 2048,
+          "intensity_flop_per_byte": 7.0,
+          "bound": "bandwidth"
+        },
+        {
+          "context_len": 4096,
+          "intensity_flop_per_byte": 7.0,
+          "bound": "bandwidth"
+        },
+        {
+          "context_len": 8192,
+          "intensity_flop_per_byte": 7.0,
+          "bound": "bandwidth"
+        },
+        {
+          "context_len": 16384,
+          "intensity_flop_per_byte": 7.0,
+          "bound": "bandwidth"
+        },
+        {
+          "context_len": 32768,
+          "intensity_flop_per_byte": 7.0,
+          "bound": "bandwidth"
+        },
+        {
+          "context_len": 65536,
+          "intensity_flop_per_byte": 7.0,
+          "bound": "bandwidth"
+        },
+        {
+          "context_len": 131072,
+          "intensity_flop_per_byte": 7.0,
+          "bound": "bandwidth"
+        }
+      ],
+      "kv_read_fraction": [
+        {
+          "context_len": 512,
+          "weight_read_bytes": 988065536,
+          "kv_read_bytes_b1": 6291456,
+          "kv_fraction_b1": 0.0063,
+          "kv_read_bytes_b16": 100663296,
+          "kv_fraction_b16": 0.0925,
+          "kv_read_bytes_b64": 402653184,
+          "kv_fraction_b64": 0.2895
+        },
+        {
+          "context_len": 1024,
+          "weight_read_bytes": 988065536,
+          "kv_read_bytes_b1": 12582912,
+          "kv_fraction_b1": 0.0126,
+          "kv_read_bytes_b16": 201326592,
+          "kv_fraction_b16": 0.1693,
+          "kv_read_bytes_b64": 805306368,
+          "kv_fraction_b64": 0.449
+        },
+        {
+          "context_len": 2048,
+          "weight_read_bytes": 988065536,
+          "kv_read_bytes_b1": 25165824,
+          "kv_fraction_b1": 0.0248,
+          "kv_read_bytes_b16": 402653184,
+          "kv_fraction_b16": 0.2895,
+          "kv_read_bytes_b64": 1610612736,
+          "kv_fraction_b64": 0.6198
+        },
+        {
+          "context_len": 4096,
+          "weight_read_bytes": 988065536,
+          "kv_read_bytes_b1": 50331648,
+          "kv_fraction_b1": 0.0485,
+          "kv_read_bytes_b16": 805306368,
+          "kv_fraction_b16": 0.449,
+          "kv_read_bytes_b64": 3221225472,
+          "kv_fraction_b64": 0.7653
+        },
+        {
+          "context_len": 8192,
+          "weight_read_bytes": 988065536,
+          "kv_read_bytes_b1": 100663296,
+          "kv_fraction_b1": 0.0925,
+          "kv_read_bytes_b16": 1610612736,
+          "kv_fraction_b16": 0.6198,
+          "kv_read_bytes_b64": 6442450944,
+          "kv_fraction_b64": 0.867
+        },
+        {
+          "context_len": 16384,
+          "weight_read_bytes": 988065536,
+          "kv_read_bytes_b1": 201326592,
+          "kv_fraction_b1": 0.1693,
+          "kv_read_bytes_b16": 3221225472,
+          "kv_fraction_b16": 0.7653,
+          "kv_read_bytes_b64": 12884901888,
+          "kv_fraction_b64": 0.9288
+        },
+        {
+          "context_len": 32768,
+          "weight_read_bytes": 988065536,
+          "kv_read_bytes_b1": 402653184,
+          "kv_fraction_b1": 0.2895,
+          "kv_read_bytes_b16": 6442450944,
+          "kv_fraction_b16": 0.867,
+          "kv_read_bytes_b64": 25769803776,
+          "kv_fraction_b64": 0.9631
+        },
+        {
+          "context_len": 65536,
+          "weight_read_bytes": 988065536,
+          "kv_read_bytes_b1": 805306368,
+          "kv_fraction_b1": 0.449,
+          "kv_read_bytes_b16": 12884901888,
+          "kv_fraction_b16": 0.9288,
+          "kv_read_bytes_b64": 51539607552,
+          "kv_fraction_b64": 0.9812
+        },
+        {
+          "context_len": 131072,
+          "weight_read_bytes": 988065536,
+          "kv_read_bytes_b1": 1610612736,
+          "kv_fraction_b1": 0.6198,
+          "kv_read_bytes_b16": 25769803776,
+          "kv_fraction_b16": 0.9631,
+          "kv_read_bytes_b64": 103079215104,
+          "kv_fraction_b64": 0.9905
+        }
+      ]
+    },
+    "Qwen/Qwen2.5-7B-Instruct": {
+      "dims": {
+        "num_layers": 28,
+        "num_attention_heads": 28,
+        "num_kv_heads": 4,
+        "head_dim": 128
+      },
+      "param_count": 7615616512,
+      "weight_bytes_fp16": 15231233024,
+      "batch_grid": [
+        1,
+        16,
+        64
+      ],
+      "prefill_intensity": [
+        {
+          "prompt_len": 512,
+          "intensity_flop_per_byte": 3584.0,
+          "bound": "compute"
+        },
+        {
+          "prompt_len": 1024,
+          "intensity_flop_per_byte": 7168.0,
+          "bound": "compute"
+        },
+        {
+          "prompt_len": 2048,
+          "intensity_flop_per_byte": 14336.0,
+          "bound": "compute"
+        },
+        {
+          "prompt_len": 4096,
+          "intensity_flop_per_byte": 28672.0,
+          "bound": "compute"
+        }
+      ],
+      "decode_intensity": [
+        {
+          "context_len": 512,
+          "intensity_flop_per_byte": 7.0,
+          "bound": "bandwidth"
+        },
+        {
+          "context_len": 1024,
+          "intensity_flop_per_byte": 7.0,
+          "bound": "bandwidth"
+        },
+        {
+          "context_len": 2048,
+          "intensity_flop_per_byte": 7.0,
+          "bound": "bandwidth"
+        },
+        {
+          "context_len": 4096,
+          "intensity_flop_per_byte": 7.0,
+          "bound": "bandwidth"
+        },
+        {
+          "context_len": 8192,
+          "intensity_flop_per_byte": 7.0,
+          "bound": "bandwidth"
+        },
+        {
+          "context_len": 16384,
+          "intensity_flop_per_byte": 7.0,
+          "bound": "bandwidth"
+        },
+        {
+          "context_len": 32768,
+          "intensity_flop_per_byte": 7.0,
+          "bound": "bandwidth"
+        },
+        {
+          "context_len": 65536,
+          "intensity_flop_per_byte": 7.0,
+          "bound": "bandwidth"
+        },
+        {
+          "context_len": 131072,
+          "intensity_flop_per_byte": 7.0,
+          "bound": "bandwidth"
+        }
+      ],
+      "kv_read_fraction": [
+        {
+          "context_len": 512,
+          "weight_read_bytes": 15231233024,
+          "kv_read_bytes_b1": 29360128,
+          "kv_fraction_b1": 0.0019,
+          "kv_read_bytes_b16": 469762048,
+          "kv_fraction_b16": 0.0299,
+          "kv_read_bytes_b64": 1879048192,
+          "kv_fraction_b64": 0.1098
+        },
+        {
+          "context_len": 1024,
+          "weight_read_bytes": 15231233024,
+          "kv_read_bytes_b1": 58720256,
+          "kv_fraction_b1": 0.0038,
+          "kv_read_bytes_b16": 939524096,
+          "kv_fraction_b16": 0.0581,
+          "kv_read_bytes_b64": 3758096384,
+          "kv_fraction_b64": 0.1979
+        },
+        {
+          "context_len": 2048,
+          "weight_read_bytes": 15231233024,
+          "kv_read_bytes_b1": 117440512,
+          "kv_fraction_b1": 0.0077,
+          "kv_read_bytes_b16": 1879048192,
+          "kv_fraction_b16": 0.1098,
+          "kv_read_bytes_b64": 7516192768,
+          "kv_fraction_b64": 0.3304
+        },
+        {
+          "context_len": 4096,
+          "weight_read_bytes": 15231233024,
+          "kv_read_bytes_b1": 234881024,
+          "kv_fraction_b1": 0.0152,
+          "kv_read_bytes_b16": 3758096384,
+          "kv_fraction_b16": 0.1979,
+          "kv_read_bytes_b64": 15032385536,
+          "kv_fraction_b64": 0.4967
+        },
+        {
+          "context_len": 8192,
+          "weight_read_bytes": 15231233024,
+          "kv_read_bytes_b1": 469762048,
+          "kv_fraction_b1": 0.0299,
+          "kv_read_bytes_b16": 7516192768,
+          "kv_fraction_b16": 0.3304,
+          "kv_read_bytes_b64": 30064771072,
+          "kv_fraction_b64": 0.6637
+        },
+        {
+          "context_len": 16384,
+          "weight_read_bytes": 15231233024,
+          "kv_read_bytes_b1": 939524096,
+          "kv_fraction_b1": 0.0581,
+          "kv_read_bytes_b16": 15032385536,
+          "kv_fraction_b16": 0.4967,
+          "kv_read_bytes_b64": 60129542144,
+          "kv_fraction_b64": 0.7979
+        },
+        {
+          "context_len": 32768,
+          "weight_read_bytes": 15231233024,
+          "kv_read_bytes_b1": 1879048192,
+          "kv_fraction_b1": 0.1098,
+          "kv_read_bytes_b16": 30064771072,
+          "kv_fraction_b16": 0.6637,
+          "kv_read_bytes_b64": 120259084288,
+          "kv_fraction_b64": 0.8876
+        },
+        {
+          "context_len": 65536,
+          "weight_read_bytes": 15231233024,
+          "kv_read_bytes_b1": 3758096384,
+          "kv_fraction_b1": 0.1979,
+          "kv_read_bytes_b16": 60129542144,
+          "kv_fraction_b16": 0.7979,
+          "kv_read_bytes_b64": 240518168576,
+          "kv_fraction_b64": 0.9404
+        },
+        {
+          "context_len": 131072,
+          "weight_read_bytes": 15231233024,
+          "kv_read_bytes_b1": 7516192768,
+          "kv_fraction_b1": 0.3304,
+          "kv_read_bytes_b16": 120259084288,
+          "kv_fraction_b16": 0.8876,
+          "kv_read_bytes_b64": 481036337152,
+          "kv_fraction_b64": 0.9693
+        }
+      ]
+    }
+  },
+  "measured_points": {
+    "model": "Qwen/Qwen2.5-0.5B-Instruct",
+    "param_count": 494032768,
+    "weight_bytes_fp16": 988065536,
+    "prefill": [
+      {
+        "prompt_len": 512,
+        "latency_ms": 30.682,
+        "achieved_TFLOPS": 17.22,
+        "compute_util_pct": 15.6,
+        "operational_intensity": 3584.0
+      },
+      {
+        "prompt_len": 1024,
+        "latency_ms": 27.301,
+        "achieved_TFLOPS": 40.36,
+        "compute_util_pct": 36.6,
+        "operational_intensity": 7168.0
+      },
+      {
+        "prompt_len": 2048,
+        "latency_ms": 33.32,
+        "achieved_TFLOPS": 71.56,
+        "compute_util_pct": 64.9,
+        "operational_intensity": 14336.0
+      },
+      {
+        "prompt_len": 4096,
+        "latency_ms": 64.717,
+        "achieved_TFLOPS": 84.83,
+        "compute_util_pct": 77.0,
+        "operational_intensity": 28672.0
+      }
+    ],
+    "decode": [
+      {
+        "context_len": 512,
+        "latency_ms": 26.687,
+        "achieved_GBps": 37.3,
+        "bandwidth_util_pct": 6.0,
+        "achieved_TFLOPS": 0.039,
+        "kv_read_bytes": 6291456,
+        "weight_read_bytes": 988065536,
+        "operational_intensity": 7.0
+      },
+      {
+        "context_len": 1024,
+        "latency_ms": 27.921,
+        "achieved_GBps": 35.8,
+        "bandwidth_util_pct": 5.7,
+        "achieved_TFLOPS": 0.039,
+        "kv_read_bytes": 12582912,
+        "weight_read_bytes": 988065536,
+        "operational_intensity": 7.0
+      },
+      {
+        "context_len": 2048,
+        "latency_ms": 27.108,
+        "achieved_GBps": 37.4,
+        "bandwidth_util_pct": 6.0,
+        "achieved_TFLOPS": 0.043,
+        "kv_read_bytes": 25165824,
+        "weight_read_bytes": 988065536,
+        "operational_intensity": 7.0
+      },
+      {
+        "context_len": 4096,
+        "latency_ms": 29.316,
+        "achieved_GBps": 35.4,
+        "bandwidth_util_pct": 5.7,
+        "achieved_TFLOPS": 0.046,
+        "kv_read_bytes": 50331648,
+        "weight_read_bytes": 988065536,
+        "operational_intensity": 7.0
+      },
+      {
+        "context_len": 8192,
+        "latency_ms": 26.843,
+        "achieved_GBps": 40.6,
+        "bandwidth_util_pct": 6.5,
+        "achieved_TFLOPS": 0.063,
+        "kv_read_bytes": 100663296,
+        "weight_read_bytes": 988065536,
+        "operational_intensity": 7.0
+      },
+      {
+        "context_len": 16384,
+        "latency_ms": 27.081,
+        "achieved_GBps": 43.9,
+        "bandwidth_util_pct": 7.0,
+        "achieved_TFLOPS": 0.089,
+        "kv_read_bytes": 201326592,
+        "weight_read_bytes": 988065536,
+        "operational_intensity": 7.0
+      }
+    ]
+  }
+}

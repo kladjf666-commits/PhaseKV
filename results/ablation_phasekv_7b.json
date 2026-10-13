@@ -1,0 +1,186 @@
+{
+  "rows": [
+    {
+      "method": "full",
+      "longbench_score": 15.62,
+      "longbench_per_task": {
+        "narrativeqa": 4.07,
+        "multifieldqa_en": 21.24,
+        "hotpotqa": 16.54,
+        "2wikimqa": 17.22,
+        "qasper": 19.05
+      },
+      "kv_saving_pct": 0.0631,
+      "compression_ratio": 1.0006,
+      "peak_gpu_mb": 16009.6,
+      "ttft_ms": 333.06,
+      "tpot_ms": 30.87,
+      "decode_tps": 33.09,
+      "token_match_vs_full": null,
+      "perplexity": null,
+      "num_samples": 160,
+      "params": {
+        "name": "full"
+      }
+    },
+    {
+      "method": "phasekv_full",
+      "longbench_score": 18.43,
+      "longbench_per_task": {
+        "narrativeqa": 10.71,
+        "multifieldqa_en": 28.08,
+        "hotpotqa": 13.87,
+        "2wikimqa": 20.14,
+        "qasper": 19.34
+      },
+      "kv_saving_pct": 93.3072,
+      "compression_ratio": 14.9413,
+      "peak_gpu_mb": 19715.7,
+      "ttft_ms": 331.35,
+      "tpot_ms": 32.47,
+      "decode_tps": 31.58,
+      "token_match_vs_full": 0.6224,
+      "perplexity": null,
+      "num_samples": 160,
+      "params": {
+        "name": "phasekv_full",
+        "prefill_keep_ratio": 0.3,
+        "prompt_bits": 2,
+        "cold_bits": 4,
+        "recent_window": 32
+      }
+    },
+    {
+      "method": "abl_no_select",
+      "longbench_score": 17.49,
+      "longbench_per_task": {
+        "narrativeqa": 10.01,
+        "multifieldqa_en": 29.69,
+        "hotpotqa": 8.12,
+        "2wikimqa": 18.74,
+        "qasper": 20.89
+      },
+      "kv_saving_pct": 80.4029,
+      "compression_ratio": 5.1028,
+      "peak_gpu_mb": 19729.3,
+      "ttft_ms": 331.3,
+      "tpot_ms": 33.52,
+      "decode_tps": 30.66,
+      "token_match_vs_full": 0.6282,
+      "perplexity": null,
+      "num_samples": 160,
+      "params": {
+        "name": "abl_no_select",
+        "prefill_keep_ratio": 1.0,
+        "prompt_bits": 2,
+        "cold_bits": 4,
+        "recent_window": 32
+      }
+    },
+    {
+      "method": "abl_no_promptq",
+      "longbench_score": 14.45,
+      "longbench_per_task": {
+        "narrativeqa": 3.86,
+        "multifieldqa_en": 17.19,
+        "hotpotqa": 10.79,
+        "2wikimqa": 17.67,
+        "qasper": 22.76
+      },
+      "kv_saving_pct": 69.2793,
+      "compression_ratio": 3.2551,
+      "peak_gpu_mb": 19715.2,
+      "ttft_ms": 331.37,
+      "tpot_ms": 31.87,
+      "decode_tps": 32.11,
+      "token_match_vs_full": 0.757,
+      "perplexity": null,
+      "num_samples": 160,
+      "params": {
+        "name": "abl_no_promptq",
+        "prefill_keep_ratio": 0.3,
+        "prompt_bits": 16,
+        "cold_bits": 4,
+        "recent_window": 32
+      }
+    },
+    {
+      "method": "abl_uniform4",
+      "longbench_score": 14.59,
+      "longbench_per_task": {
+        "narrativeqa": 5.94,
+        "multifieldqa_en": 19.83,
+        "hotpotqa": 8.91,
+        "2wikimqa": 15.88,
+        "qasper": 22.38
+      },
+      "kv_saving_pct": 89.6699,
+      "compression_ratio": 9.6805,
+      "peak_gpu_mb": 19715.2,
+      "ttft_ms": 331.06,
+      "tpot_ms": 32.98,
+      "decode_tps": 30.98,
+      "token_match_vs_full": 0.7656,
+      "perplexity": null,
+      "num_samples": 160,
+      "params": {
+        "name": "abl_uniform4",
+        "prefill_keep_ratio": 0.3,
+        "prompt_bits": 4,
+        "cold_bits": 4,
+        "recent_window": 32
+      }
+    },
+    {
+      "method": "abl_min_hot",
+      "longbench_score": 18.48,
+      "longbench_per_task": {
+        "narrativeqa": 10.71,
+        "multifieldqa_en": 27.23,
+        "hotpotqa": 14.2,
+        "2wikimqa": 20.14,
+        "qasper": 20.12
+      },
+      "kv_saving_pct": 93.6572,
+      "compression_ratio": 15.7659,
+      "peak_gpu_mb": 19715.2,
+      "ttft_ms": 331.16,
+      "tpot_ms": 30.69,
+      "decode_tps": 33.21,
+      "token_match_vs_full": 0.6219,
+      "perplexity": null,
+      "num_samples": 160,
+      "params": {
+        "name": "abl_min_hot",
+        "prefill_keep_ratio": 0.3,
+        "prompt_bits": 2,
+        "cold_bits": 4,
+        "recent_window": 1
+      }
+    }
+  ],
+  "meta": {
+    "model": "/root/autodl-tmp/modelscope-cache/Qwen/Qwen2___5-7B-Instruct",
+    "experiment": "longbench_qa_f1",
+    "dtype": "float16",
+    "attn_implementation": "eager",
+    "tasks": [
+      "narrativeqa",
+      "multifieldqa_en",
+      "hotpotqa",
+      "2wikimqa",
+      "qasper"
+    ],
+    "n_samples_per_task": 32,
+    "max_length_truncate": 1536,
+    "kv_dims": {
+      "num_layers": 28,
+      "num_kv_heads": 4,
+      "head_dim": 128
+    },
+    "device": "cuda",
+    "greedy": true,
+    "score_metric": "qa_f1 (LongBench 官方口径, x100, 越高越好)",
+    "note": "真实模型真实测量, 无模拟数据。prompt 经 LongBench 官方模板 + chat 模板, 超 --max-length 走中部截断 (头尾各 half); 截断为适配 32G 显存下 eager+output_attentions 的 O(n^2) 注意力开销, 已在 meta 标注, iso-context 公平。"
+  }
+}

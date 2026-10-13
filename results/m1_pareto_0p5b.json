@@ -1,0 +1,99 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen2.5-0.5B-Instruct",
+    "dtype": "float16",
+    "attn_implementation": "eager",
+    "prompt_len": 552,
+    "max_new_tokens": 48,
+    "kv_dims": {
+      "num_layers": 24,
+      "num_kv_heads": 2,
+      "head_dim": 64
+    },
+    "device": "cuda",
+    "greedy": true,
+    "preset": "custom"
+  },
+  "rows": [
+    {
+      "method": "full",
+      "kv_saving_pct": 0.16666666666667052,
+      "compression_ratio": 1.001669449081803,
+      "peak_gpu_mb": 1181.500416,
+      "ttft_ms": 34.27202766761184,
+      "tpot_ms": 31.45930228477463,
+      "decode_tps": 31.787100392368536,
+      "token_match_vs_full": 1.0,
+      "perplexity": 1.7048518383685618,
+      "final_cache_bytes": 7360512,
+      "full_ref_cache_bytes": 7372800,
+      "num_generated": 48,
+      "text": " and benefit from cheap streaming policies. This document is used as a small offline corpus so that the perplexity smoke test can run without any network access. Large language model inference is dominated by two phases. During the prefill phase, the model",
+      "ppl_total_tokens": 1164
+    },
+    {
+      "method": "snapkv",
+      "kv_saving_pct": 64.5,
+      "compression_ratio": 2.816901408450704,
+      "peak_gpu_mb": 1385.179136,
+      "ttft_ms": 44.13802037015557,
+      "tpot_ms": 25.55520051812872,
+      "decode_tps": 39.130978420247786,
+      "token_match_vs_full": 0.20833333333333334,
+      "perplexity": 2.1871987503924717,
+      "final_cache_bytes": 2617344,
+      "full_ref_cache_bytes": 7372800,
+      "num_generated": 48,
+      "text": " and benefit from cheap streaming policies. This paper presents a novel approach to language model inference that is based on the idea of a \"prompt\" token. The prompt token is a fixed token that is used to analyze the input prompt. The prompt",
+      "ppl_total_tokens": 1164
+    },
+    {
+      "method": "kivi",
+      "kv_saving_pct": 69.5,
+      "compression_ratio": 3.278688524590164,
+      "peak_gpu_mb": 1181.500416,
+      "ttft_ms": 28.481624089181423,
+      "tpot_ms": 22.766336323098933,
+      "decode_tps": 43.924502643202665,
+      "token_match_vs_full": 1.0,
+      "perplexity": 1.7574423011040463,
+      "final_cache_bytes": 2248704,
+      "full_ref_cache_bytes": 7372800,
+      "num_generated": 48,
+      "text": " and benefit from cheap streaming policies. This document is used as a small offline corpus so that the perplexity smoke test can run without any network access. Large language model inference is dominated by two phases. During the prefill phase, the model",
+      "ppl_total_tokens": 1164
+    },
+    {
+      "method": "scope",
+      "kv_saving_pct": 4.0000000000000036,
+      "compression_ratio": 1.0416666666666667,
+      "peak_gpu_mb": 1386.632704,
+      "ttft_ms": 32.995590940117836,
+      "tpot_ms": 23.322062844291647,
+      "decode_tps": 42.87785375918245,
+      "token_match_vs_full": 1.0,
+      "perplexity": 1.702430058191183,
+      "final_cache_bytes": 7077888,
+      "full_ref_cache_bytes": 7372800,
+      "num_generated": 48,
+      "text": " and benefit from cheap streaming policies. This document is used as a small offline corpus so that the perplexity smoke test can run without any network access. Large language model inference is dominated by two phases. During the prefill phase, the model",
+      "ppl_total_tokens": 1164
+    },
+    {
+      "method": "phasekv",
+      "kv_saving_pct": 86.84375,
+      "compression_ratio": 7.600950118764845,
+      "peak_gpu_mb": 1385.179136,
+      "ttft_ms": 29.682165943086147,
+      "tpot_ms": 23.382531092601255,
+      "decode_tps": 42.766969753604734,
+      "token_match_vs_full": 0.14583333333333334,
+      "perplexity": 2.340352734224363,
+      "final_cache_bytes": 969984,
+      "full_ref_cache_bytes": 7372800,
+      "num_generated": 48,
+      "text": " and benefit from cheap streaming policies. The decode tokens arrive incrementally and benefit from cheap streaming policies. The prompt tokens are fixed and can be analyzed once, while the decode tokens arrive incrementally and benefit from cheap streaming policies. The prompt tokens",
+      "ppl_total_tokens": 1164
+    }
+  ]
+}

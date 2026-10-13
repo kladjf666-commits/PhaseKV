@@ -1,0 +1,204 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1160" viewBox="0 0 1800 1160" role="img" aria-labelledby="title desc">
+  <title id="title">PhaseKV Prompt 压缩及其与 Cold、Hot 层的关系</title>
+  <desc id="desc">Prefill 先生成完整 Prompt KV，随后依据观察窗口注意力逐层逐 KV head 选择 sink、重要历史和最近 token，再做低比特量化形成只读 Prompt 层。Decode 新 token 先进入 FP16 Hot 层，滑出最近窗口并累积到 G 个后，按 Value 范数选择并量化进入 Cold 层；Prompt 层不参与冷热迁移。</desc>
+  <defs>
+    <style>
+      .bg { fill:#ffffff; }
+      .ink { fill:#17324d; }
+      .muted { fill:#60758a; }
+      .tiny { font: 18px 'Noto Sans CJK SC','Microsoft YaHei',sans-serif; }
+      .body { font: 21px 'Noto Sans CJK SC','Microsoft YaHei',sans-serif; }
+      .label { font: 500 24px 'Noto Sans CJK SC','Microsoft YaHei',sans-serif; }
+      .head { font: 500 31px 'Noto Sans CJK SC','Microsoft YaHei',sans-serif; }
+      .title { font: 500 44px 'Noto Sans CJK SC','Microsoft YaHei',sans-serif; }
+      .math { font-family:'Noto Sans CJK SC','Microsoft YaHei',sans-serif; font-style:italic; }
+      .panel { fill:#fbfdff; stroke:#c9d7e3; stroke-width:2; }
+      .stage { fill:#edf3f8; stroke:#b9cad8; stroke-width:2; }
+      .prompt-fill { fill:#dff4f2; stroke:#15989c; stroke-width:2.5; }
+      .cold-fill { fill:#fff0dd; stroke:#d27a17; stroke-width:2.5; }
+      .hot-fill { fill:#ece9fb; stroke:#6d5ab7; stroke-width:2.5; }
+      .arrow { fill:none; stroke:#294b69; stroke-width:3; marker-end:url(#arrow); }
+      .arrow-thin { fill:none; stroke:#6a8196; stroke-width:2.2; marker-end:url(#arrow-small); }
+      .dash { stroke-dasharray:8 7; }
+      .token { stroke:#ffffff; stroke-width:2; rx:4; }
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#294b69"/>
+    </marker>
+    <marker id="arrow-small" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L9,4.5 L0,9 Z" fill="#6a8196"/>
+    </marker>
+    <pattern id="hatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <rect width="8" height="8" fill="#eef1f4"/>
+      <line x1="0" y1="0" x2="0" y2="8" stroke="#aab7c2" stroke-width="3"/>
+    </pattern>
+  </defs>
+
+  <rect class="bg" width="1800" height="1160"/>
+
+  <text x="70" y="72" class="title ink">PhaseKV：Prompt 压缩与 Decode Cold / Hot 分层</text>
+  <text x="1730" y="66" text-anchor="end" class="body muted">单层、单 KV head 示意 · 各层 / 各 head 独立选择</text>
+
+  <!-- Phase A: prefill and prompt compression -->
+  <rect x="55" y="105" width="1690" height="470" rx="18" class="panel"/>
+  <rect x="80" y="130" width="250" height="52" rx="9" fill="#17324d"/>
+  <text x="205" y="165" text-anchor="middle" class="label" fill="#ffffff">A · PREFILL</text>
+  <text x="355" y="165" class="head ink">完整 Prompt KV 先生成，再就地压缩为冻结层</text>
+
+  <!-- Full prompt KV -->
+  <rect x="92" y="220" width="365" height="275" rx="14" class="stage"/>
+  <text x="274" y="260" text-anchor="middle" class="label ink">① 完整 Prompt 前向</text>
+  <text x="274" y="292" text-anchor="middle" class="body muted">模型计算 K / V 与注意力 A</text>
+  <g transform="translate(122,330)">
+    <rect x="0" y="0" width="20" height="46" class="token" fill="#8fa3b5"/>
+    <rect x="22" y="0" width="20" height="46" class="token" fill="#8fa3b5"/>
+    <rect x="44" y="0" width="20" height="46" class="token" fill="#8fa3b5"/>
+    <rect x="66" y="0" width="20" height="46" class="token" fill="#8fa3b5"/>
+    <rect x="88" y="0" width="20" height="46" class="token" fill="#8fa3b5"/>
+    <rect x="110" y="0" width="20" height="46" class="token" fill="#8fa3b5"/>
+    <rect x="132" y="0" width="20" height="46" class="token" fill="#8fa3b5"/>
+    <rect x="154" y="0" width="20" height="46" class="token" fill="#8fa3b5"/>
+    <rect x="176" y="0" width="20" height="46" class="token" fill="#8fa3b5"/>
+    <rect x="198" y="0" width="20" height="46" class="token" fill="#8fa3b5"/>
+    <rect x="220" y="0" width="20" height="46" class="token" fill="#8fa3b5"/>
+    <rect x="242" y="0" width="20" height="46" class="token" fill="#6d5ab7"/>
+    <rect x="264" y="0" width="20" height="46" class="token" fill="#6d5ab7"/>
+    <rect x="286" y="0" width="20" height="46" class="token" fill="#6d5ab7"/>
+  </g>
+  <path d="M122 410 H428" stroke="#6d5ab7" stroke-width="3"/>
+  <path d="M364 402 V418 M386 402 V418 M408 402 V418" stroke="#6d5ab7" stroke-width="3"/>
+  <text x="274" y="447" text-anchor="middle" class="tiny muted">完整 KV 已写入 GPU cache</text>
+  <text x="274" y="478" text-anchor="middle" class="tiny" fill="#6d5ab7">末尾 w 个 query = 观察窗口</text>
+
+  <path d="M468 356 H540" class="arrow"/>
+  <text x="503" y="335" text-anchor="middle" class="tiny muted">一次</text>
+
+  <!-- Attention selection -->
+  <rect x="552" y="200" width="650" height="315" rx="14" fill="#ffffff" stroke="#9fc2cf" stroke-width="2"/>
+  <text x="877" y="242" text-anchor="middle" class="label ink">② 注意力引导的逐 head 选择</text>
+  <text x="877" y="276" text-anchor="middle" class="body muted">观察窗口投票 → 局部池化 → 历史候选区 Top-k</text>
+
+  <text x="582" y="324" class="tiny" fill="#117f83">Sink 强制保留</text>
+  <text x="765" y="324" class="tiny muted">历史候选 [sink, L−w)</text>
+  <text x="1048" y="324" class="tiny" fill="#6d5ab7">Recent 强制保留</text>
+  <g transform="translate(582,342)">
+    <rect x="0" y="0" width="30" height="56" class="token" fill="#35aeb0"/>
+    <rect x="33" y="0" width="30" height="56" class="token" fill="#35aeb0"/>
+    <rect x="76" y="0" width="30" height="56" class="token" fill="url(#hatch)"/>
+    <rect x="109" y="0" width="30" height="56" class="token" fill="#35aeb0"/>
+    <rect x="142" y="0" width="30" height="56" class="token" fill="url(#hatch)"/>
+    <rect x="175" y="0" width="30" height="56" class="token" fill="url(#hatch)"/>
+    <rect x="208" y="0" width="30" height="56" class="token" fill="#35aeb0"/>
+    <rect x="241" y="0" width="30" height="56" class="token" fill="#35aeb0"/>
+    <rect x="274" y="0" width="30" height="56" class="token" fill="url(#hatch)"/>
+    <rect x="307" y="0" width="30" height="56" class="token" fill="url(#hatch)"/>
+    <rect x="340" y="0" width="30" height="56" class="token" fill="#35aeb0"/>
+    <rect x="373" y="0" width="30" height="56" class="token" fill="url(#hatch)"/>
+    <rect x="416" y="0" width="30" height="56" class="token" fill="#6d5ab7"/>
+    <rect x="449" y="0" width="30" height="56" class="token" fill="#6d5ab7"/>
+    <rect x="482" y="0" width="30" height="56" class="token" fill="#6d5ab7"/>
+    <rect x="515" y="0" width="30" height="56" class="token" fill="#6d5ab7"/>
+  </g>
+  <text x="877" y="434" text-anchor="middle" class="body ink">K₀ = sink + selected history + recent</text>
+  <text x="877" y="468" text-anchor="middle" class="tiny muted">每层、每个 KV head 下标可不同；数量相同以保持矩形张量</text>
+  <g transform="translate(620,486)">
+    <rect x="0" y="-14" width="16" height="16" rx="3" fill="#35aeb0"/>
+    <text x="24" y="0" class="tiny muted">保留</text>
+    <rect x="104" y="-14" width="16" height="16" rx="3" fill="url(#hatch)"/>
+    <text x="128" y="0" class="tiny muted">驱逐</text>
+    <rect x="232" y="-14" width="16" height="16" rx="3" fill="#6d5ab7"/>
+    <text x="256" y="0" class="tiny muted">观察窗口</text>
+  </g>
+
+  <path d="M1214 356 H1274" class="arrow"/>
+
+  <!-- Frozen prompt tier -->
+  <rect x="1288" y="220" width="420" height="275" rx="14" class="prompt-fill"/>
+  <text x="1498" y="260" text-anchor="middle" class="label" fill="#117f83">③ Prompt Tier · Frozen</text>
+  <text x="1498" y="296" text-anchor="middle" class="body ink">K：per-channel；V：per-token</text>
+  <text x="1498" y="329" text-anchor="middle" class="body ink">KIVI 式 bₚ-bit 量化</text>
+  <g transform="translate(1343,360)">
+    <rect x="0" y="0" width="27" height="52" class="token" fill="#35aeb0"/>
+    <rect x="30" y="0" width="27" height="52" class="token" fill="#35aeb0"/>
+    <rect x="60" y="0" width="27" height="52" class="token" fill="#56babc"/>
+    <rect x="90" y="0" width="27" height="52" class="token" fill="#35aeb0"/>
+    <rect x="120" y="0" width="27" height="52" class="token" fill="#56babc"/>
+    <rect x="150" y="0" width="27" height="52" class="token" fill="#35aeb0"/>
+    <rect x="180" y="0" width="27" height="52" class="token" fill="#56babc"/>
+    <rect x="210" y="0" width="27" height="52" class="token" fill="#6d5ab7"/>
+    <rect x="240" y="0" width="27" height="52" class="token" fill="#6d5ab7"/>
+    <rect x="270" y="0" width="27" height="52" class="token" fill="#6d5ab7"/>
+  </g>
+  <text x="1498" y="446" text-anchor="middle" class="body" fill="#117f83">只读 · 后续 decode 永不迁移 / 重量化</text>
+  <text x="1498" y="477" text-anchor="middle" class="tiny muted">当前阶段 A：低比特为 fake-quant；逻辑显存按 bₚ 折算</text>
+
+  <!-- Chronology strip -->
+  <rect x="175" y="530" width="1450" height="30" rx="15" fill="#e8eff5"/>
+  <circle cx="235" cy="545" r="10" fill="#17324d"/>
+  <circle cx="900" cy="545" r="10" fill="#15989c"/>
+  <circle cx="1555" cy="545" r="10" fill="#6d5ab7"/>
+  <text x="253" y="553" class="tiny ink">先写入完整 KV</text>
+  <text x="918" y="553" class="tiny ink">Prefill 结束后原地选择 + 量化</text>
+  <text x="1573" y="553" class="tiny ink">再进入 Decode</text>
+
+  <!-- Phase B: decode three-tier cache -->
+  <rect x="55" y="605" width="1690" height="485" rx="18" class="panel"/>
+  <rect x="80" y="630" width="250" height="52" rx="9" fill="#17324d"/>
+  <text x="205" y="665" text-anchor="middle" class="label" fill="#ffffff">B · DECODE</text>
+  <text x="355" y="665" class="head ink">三层共存于同一 KV Cache；只有生成 token 在 Hot → Cold 间迁移</text>
+
+  <!-- Three-tier memory layout -->
+  <text x="105" y="724" class="label ink">物理时间布局</text>
+  <rect x="105" y="748" width="560" height="126" rx="12" class="prompt-fill"/>
+  <rect x="665" y="748" width="410" height="126" rx="12" class="cold-fill"/>
+  <rect x="1075" y="748" width="620" height="126" rx="12" class="hot-fill"/>
+
+  <text x="385" y="790" text-anchor="middle" class="label" fill="#117f83">Prompt Tier · K₀ tokens · bₚ bit</text>
+  <text x="385" y="828" text-anchor="middle" class="body ink">Prefill 选择 + 量化后冻结</text>
+  <text x="385" y="857" text-anchor="middle" class="tiny muted">每一步注意力都读取；边界固定</text>
+
+  <text x="870" y="790" text-anchor="middle" class="label" fill="#b7620a">Cold Tier · old generated · b꜀ bit</text>
+  <text x="870" y="828" text-anchor="middle" class="body ink">已冷却的较老生成 token</text>
+  <text x="870" y="857" text-anchor="middle" class="tiny muted">低比特、冻结；可按保留率驱逐</text>
+
+  <text x="1385" y="790" text-anchor="middle" class="label" fill="#5a49a0">Hot Tier · recent generated · FP16</text>
+  <text x="1385" y="828" text-anchor="middle" class="body ink">最近 W 个 + 尚未攒够 G 的 aged token</text>
+  <text x="1385" y="857" text-anchor="middle" class="tiny muted">新 token 先追加到物理末尾</text>
+
+  <!-- address brackets -->
+  <path d="M105 895 V910 H665 V895" fill="none" stroke="#15989c" stroke-width="2.5"/>
+  <text x="385" y="938" text-anchor="middle" class="tiny muted">[0, K₀)</text>
+  <path d="M665 895 V910 H1075 V895" fill="none" stroke="#d27a17" stroke-width="2.5"/>
+  <text x="870" y="938" text-anchor="middle" class="tiny muted">[K₀, K₀ + cold_len)</text>
+  <path d="M1075 895 V910 H1695 V895" fill="none" stroke="#6d5ab7" stroke-width="2.5"/>
+  <text x="1385" y="938" text-anchor="middle" class="tiny muted">[K₀ + cold_len, seq)</text>
+
+  <!-- Decode maintenance loop -->
+  <rect x="112" y="972" width="300" height="78" rx="12" fill="#f2efff" stroke="#8b7aca" stroke-width="2"/>
+  <text x="262" y="1004" text-anchor="middle" class="label" fill="#5a49a0">新 token</text>
+  <text x="262" y="1035" text-anchor="middle" class="tiny muted">模型前向自然追加至 Hot</text>
+
+  <path d="M425 1011 H574" class="arrow"/>
+
+  <rect x="588" y="972" width="410" height="78" rx="12" fill="#ffffff" stroke="#b9cad8" stroke-width="2"/>
+  <text x="793" y="1004" text-anchor="middle" class="label ink">aged = hot_len − W</text>
+  <text x="793" y="1035" text-anchor="middle" class="tiny muted">若 aged &lt; G：继续留在 Hot，不处理</text>
+
+  <path d="M1010 1011 H1154" class="arrow"/>
+  <text x="1081" y="991" text-anchor="middle" class="tiny" fill="#b7620a">aged ≥ G</text>
+
+  <rect x="1168" y="962" width="490" height="98" rx="12" class="cold-fill"/>
+  <text x="1413" y="996" text-anchor="middle" class="label" fill="#b7620a">懒批冷却（每 ≥ G 个）</text>
+  <text x="1413" y="1028" text-anchor="middle" class="body ink">V-norm 逐 head 选择 → b꜀-bit 量化</text>
+  <text x="1413" y="1053" text-anchor="middle" class="tiny muted">保留批插入 Cold；Hot 回到最近 W 附近</text>
+
+  <path d="M1413 960 C1413 922,1120 935,940 922" class="arrow-thin dash"/>
+  <text x="1235" y="922" class="tiny" fill="#b7620a">仅 Decode 老 token 进入 Cold</text>
+  <path d="M665 923 C560 950,460 958,402 965" fill="none" stroke="#15989c" stroke-width="2" stroke-dasharray="7 7"/>
+  <text x="505" y="950" text-anchor="middle" class="tiny" fill="#117f83">Prompt 边界保持不动</text>
+
+  <!-- Footer note -->
+  <line x1="80" y1="1118" x2="1720" y2="1118" stroke="#d3dee7" stroke-width="2"/>
+  <text x="80" y="1148" class="tiny muted">执行顺序：完整 Prompt KV 写入 cache → on_prefill() 就地压缩 Prompt → 逐步 Decode；on_decode_step() 只维护生成段的 Cold / Hot。</text>
+  <text x="1720" y="1148" text-anchor="end" class="tiny muted">PhaseKV code-aligned schematic</text>
+</svg>

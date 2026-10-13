@@ -1,0 +1,51 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen2.5-0.5B-Instruct",
+    "dtype": "float16",
+    "attn_implementation": "eager",
+    "prompt_len": 140,
+    "max_new_tokens": 8,
+    "kv_dims": {
+      "num_layers": 24,
+      "num_kv_heads": 2,
+      "head_dim": 64
+    },
+    "device": "cuda",
+    "greedy": true,
+    "preset": "custom"
+  },
+  "rows": [
+    {
+      "method": "full",
+      "kv_saving_pct": 0.6756756756756799,
+      "compression_ratio": 1.0068027210884354,
+      "peak_gpu_mb": 1050.203648,
+      "ttft_ms": 34.23786070197821,
+      "tpot_ms": 33.735303740416256,
+      "decode_tps": 29.642537316240603,
+      "token_match_vs_full": 1.0,
+      "perplexity": 1.7048260700870332,
+      "final_cache_bytes": 1806336,
+      "full_ref_cache_bytes": 1818624,
+      "num_generated": 8,
+      "text": " tokens are different. In this paper,",
+      "ppl_total_tokens": 1164
+    },
+    {
+      "method": "scope",
+      "kv_saving_pct": 0.6756756756756799,
+      "compression_ratio": 1.0068027210884354,
+      "peak_gpu_mb": 1063.470592,
+      "ttft_ms": 39.659676142036915,
+      "tpot_ms": 34.2807258213205,
+      "decode_tps": 29.170910943141745,
+      "token_match_vs_full": 1.0,
+      "perplexity": 3.6453256911993477,
+      "final_cache_bytes": 1806336,
+      "full_ref_cache_bytes": 1818624,
+      "num_generated": 8,
+      "text": " tokens are different. In this paper,",
+      "ppl_total_tokens": 1164
+    }
+  ]
+}

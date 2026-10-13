@@ -1,0 +1,79 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen2.5-0.5B-Instruct",
+    "dtype": "float16",
+    "attn_implementation": "eager",
+    "prompt_len": 552,
+    "max_new_tokens": 32,
+    "kv_dims": {
+      "num_layers": 24,
+      "num_kv_heads": 2,
+      "head_dim": 64
+    },
+    "device": "cuda",
+    "greedy": true,
+    "preset": "attention"
+  },
+  "rows": [
+    {
+      "method": "full",
+      "kv_saving_pct": 0.1712328767123239,
+      "compression_ratio": 1.0017152658662092,
+      "peak_gpu_mb": 1181.500416,
+      "ttft_ms": 44.945377856492996,
+      "tpot_ms": 35.660922467227905,
+      "decode_tps": 28.04189939054414,
+      "token_match_vs_full": 1.0,
+      "perplexity": null,
+      "final_cache_bytes": 7163904,
+      "full_ref_cache_bytes": 7176192,
+      "num_generated": 32,
+      "text": " and benefit from cheap streaming policies. This document is used as a small offline corpus so that the perplexity smoke test can run without any network access. Large language"
+    },
+    {
+      "method": "streaming",
+      "kv_saving_pct": 55.47945205479452,
+      "compression_ratio": 2.246153846153846,
+      "peak_gpu_mb": 1180.411904,
+      "ttft_ms": 50.72007095441222,
+      "tpot_ms": 35.60358306933795,
+      "decode_tps": 28.087060733536305,
+      "token_match_vs_full": 1.0,
+      "perplexity": null,
+      "final_cache_bytes": 3194880,
+      "full_ref_cache_bytes": 7176192,
+      "num_generated": 32,
+      "text": " and benefit from cheap streaming policies. This document is used as a small offline corpus so that the perplexity smoke test can run without any network access. Large language"
+    },
+    {
+      "method": "h2o",
+      "kv_saving_pct": 77.3972602739726,
+      "compression_ratio": 4.424242424242424,
+      "peak_gpu_mb": 1435.55072,
+      "ttft_ms": 51.05845211073756,
+      "tpot_ms": 28.058052753969548,
+      "decode_tps": 35.64039203891381,
+      "token_match_vs_full": 0.09375,
+      "perplexity": null,
+      "final_cache_bytes": 1622016,
+      "full_ref_cache_bytes": 7176192,
+      "num_generated": 32,
+      "text": " and attend to the entire model. This is a common practice in the field of natural language processing, where the model is trained on a large corpus of text data"
+    },
+    {
+      "method": "hetero",
+      "kv_saving_pct": 66.26712328767124,
+      "compression_ratio": 2.964467005076142,
+      "peak_gpu_mb": 1435.49184,
+      "ttft_ms": 45.02608114853501,
+      "tpot_ms": 29.08850061677156,
+      "decode_tps": 34.37784618652465,
+      "token_match_vs_full": 0.03125,
+      "perplexity": null,
+      "final_cache_bytes": 2420736,
+      "full_ref_cache_bytes": 7176192,
+      "num_generated": 32,
+      "text": " and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and"
+    }
+  ]
+}

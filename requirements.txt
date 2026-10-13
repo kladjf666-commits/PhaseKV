@@ -1,0 +1,23 @@
+# PhaseKV / KV Cache 压缩项目 —— 依赖清单
+# 复现环境快照见 docs/qa/ENVIRONMENT.md，全量 pip freeze 见 results/_qa_pip_freeze.txt。
+#
+# ── 环境提供、请勿用本文件重装（与 CUDA 强绑定，重装易破坏地基）──
+#   torch==2.1.2+cu121        # CUDA 12.1 / cuDNN 8902
+#   triton==2.1.0             # 阶段 B 融合 kernel（随 torch 提供）
+# 校验：python -c "import torch,triton;print(torch.__version__,triton.__version__)"
+#
+# ── 需安装/对齐的库（pip install -r requirements.txt）──
+transformers==4.46.3          # 新式 RoPE，支持 KV 驱逐；必须 >=4.46，勿降级（RISK R-01）
+tokenizers==0.20.3            # 随 transformers
+accelerate==0.34.2
+datasets==2.21.0
+numpy==1.26.3
+safetensors==0.8.0
+sentencepiece==0.2.0
+modelscope==1.37.1            # 7B 魔塔下载
+pymupdf==1.24.10              # LongBench/PDF 处理
+pytest==9.1.1                 # 回归套件（39 用例）
+matplotlib                    # 论文图（scripts/make_paper_figures.py，配 assets/fonts/SimHei.ttf）
+#
+# ── 可选 ──
+# scipy                       # Wilcoxon 检验（统计以分层 bootstrap 为主，可不装；RISK R-13）

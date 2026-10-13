@@ -1,0 +1,152 @@
+{
+  "rows": [
+    {
+      "method": "full",
+      "longbench_score": 17.23,
+      "longbench_per_task": {
+        "narrativeqa": 19.44,
+        "multifieldqa_en": 15.03
+      },
+      "kv_saving_pct": 0.0942,
+      "compression_ratio": 1.0009,
+      "peak_gpu_mb": 1342.6,
+      "ttft_ms": 64.07,
+      "tpot_ms": 29.77,
+      "decode_tps": 33.65,
+      "token_match_vs_full": null,
+      "perplexity": null,
+      "num_samples": 6,
+      "params": {}
+    },
+    {
+      "method": "snapkv",
+      "longbench_score": 15.78,
+      "longbench_per_task": {
+        "narrativeqa": 17.42,
+        "multifieldqa_en": 14.14
+      },
+      "kv_saving_pct": 69.3118,
+      "compression_ratio": 3.2586,
+      "peak_gpu_mb": 2091.5,
+      "ttft_ms": 34.56,
+      "tpot_ms": 29.56,
+      "decode_tps": 33.85,
+      "token_match_vs_full": 0.6119,
+      "perplexity": null,
+      "num_samples": 6,
+      "params": {
+        "prefill_keep_ratio": 0.3,
+        "obs_window": 16
+      }
+    },
+    {
+      "method": "kivi",
+      "longbench_score": 18.58,
+      "longbench_per_task": {
+        "narrativeqa": 21.11,
+        "multifieldqa_en": 16.05
+      },
+      "kv_saving_pct": 75.2886,
+      "compression_ratio": 4.0467,
+      "peak_gpu_mb": 1342.6,
+      "ttft_ms": 30.67,
+      "tpot_ms": 23.72,
+      "decode_tps": 42.18,
+      "token_match_vs_full": 0.3433,
+      "perplexity": null,
+      "num_samples": 6,
+      "params": {
+        "bits": 2,
+        "group_size": 32,
+        "recent_window": 64
+      }
+    },
+    {
+      "method": "scope",
+      "longbench_score": 17.23,
+      "longbench_per_task": {
+        "narrativeqa": 19.44,
+        "multifieldqa_en": 15.03
+      },
+      "kv_saving_pct": 0.0942,
+      "compression_ratio": 1.0009,
+      "peak_gpu_mb": 2094.1,
+      "ttft_ms": 33.8,
+      "tpot_ms": 25.11,
+      "decode_tps": 40.26,
+      "token_match_vs_full": 1.0,
+      "perplexity": null,
+      "num_samples": 6,
+      "params": {
+        "recent_window": 16,
+        "max_cache_tokens": 256
+      }
+    },
+    {
+      "method": "pyramidkv",
+      "longbench_score": 22.0,
+      "longbench_per_task": {
+        "narrativeqa": 22.22,
+        "multifieldqa_en": 21.78
+      },
+      "kv_saving_pct": 69.3222,
+      "compression_ratio": 3.2597,
+      "peak_gpu_mb": 2091.5,
+      "ttft_ms": 30.04,
+      "tpot_ms": 24.64,
+      "decode_tps": 40.96,
+      "token_match_vs_full": 0.4869,
+      "perplexity": null,
+      "num_samples": 6,
+      "params": {
+        "prefill_keep_ratio": 0.3,
+        "obs_window": 16,
+        "beta": 20
+      }
+    },
+    {
+      "method": "phasekv",
+      "longbench_score": 13.46,
+      "longbench_per_task": {
+        "narrativeqa": 10.0,
+        "multifieldqa_en": 16.91
+      },
+      "kv_saving_pct": 93.4264,
+      "compression_ratio": 15.2123,
+      "peak_gpu_mb": 2091.6,
+      "ttft_ms": 33.46,
+      "tpot_ms": 25.31,
+      "decode_tps": 39.59,
+      "token_match_vs_full": 0.448,
+      "perplexity": null,
+      "num_samples": 6,
+      "params": {
+        "prefill_keep_ratio": 0.3,
+        "prompt_bits": 2,
+        "cold_bits": 4,
+        "recent_window": 32
+      }
+    }
+  ],
+  "meta": {
+    "model": "Qwen/Qwen2.5-0.5B-Instruct",
+    "experiment": "longbench_qa_f1",
+    "dtype": "float16",
+    "attn_implementation": "eager",
+    "tasks": [
+      "narrativeqa",
+      "multifieldqa_en"
+    ],
+    "n_samples_per_task": 3,
+    "max_length_truncate": 1024,
+    "kv_dims": {
+      "num_layers": 24,
+      "num_kv_heads": 2,
+      "head_dim": 64
+    },
+    "device": "cuda",
+    "greedy": true,
+    "score_metric": "qa_f1 (LongBench 官方口径, x100, 越高越好)",
+    "note": "真实模型真实测量, 无模拟数据。prompt 经 LongBench 官方模板 + chat 模板, 超 --max-length 走中部截断 (头尾各 half); 截断为适配 32G 显存下 eager+output_attentions 的 O(n^2) 注意力开销, 已在 meta 标注, iso-context 公平。"
+  }
+}

@@ -1,0 +1,12 @@
+[qa_sig] phasekv 注入=True; 可用方法=['full', 'h2o', 'hetero', 'kivi', 'kvquant', 'phasekv', 'pyramidkv', 'recent', 'scope', 'segment_ablation', 'snapkv', 'streaming']
+[qa_sig] 加载模型 /root/autodl-tmp/modelscope-cache/Qwen/Qwen2___5-7B-Instruct attn=eager dtype=float16
+Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:  25%|██▌       | 1/4 [00:00<00:02,  1.37it/s]Loading checkpoint shards:  50%|█████     | 2/4 [00:01<00:01,  1.35it/s]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:02<00:00,  1.37it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:02<00:00,  1.39it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:02<00:00,  1.38it/s]
+[qa_sig] 样本总数=500 任务=['narrativeqa', 'multifieldqa_en', 'hotpotqa', '2wikimqa', 'qasper'] 截断=1536 seed=1234 n_boot=10000
+[qa_sig] full: LB=16.185 CI95=[13.646,18.908] 省0.0631% 峰值16009.6MB 耗时527s
+[qa_sig] phasekv: LB=16.44 CI95=[13.895,19.116] 省93.3322% 峰值19720.6MB 耗时510s
+[qa_sig] kivi: LB=17.179 CI95=[14.566,19.982] 省77.1032% 峰值16009.6MB 耗时494s
+[qa_sig] snapkv: LB=15.733 CI95=[13.181,18.414] 省69.0865% 峰值19720.6MB 耗时536s
+[qa_sig] pyramidkv: LB=14.68 CI95=[12.202,17.313] 省68.972% 峰值19720.6MB 耗时556s
+[qa_sig] scope: LB=16.185 CI95=[13.646,18.908] 省0.0631% 峰值19735.0MB 耗时572s
+[qa_sig] 全部完成, 总耗时 53.4 min
+报告已保存: results/_qa_significance_7b.json / .md

@@ -1,0 +1,83 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen2.5-0.5B-Instruct",
+    "dtype": "float16",
+    "attn_implementation": "eager",
+    "prompt_len": 552,
+    "max_new_tokens": 48,
+    "kv_dims": {
+      "num_layers": 24,
+      "num_kv_heads": 2,
+      "head_dim": 64
+    },
+    "device": "cuda",
+    "greedy": true,
+    "preset": "custom"
+  },
+  "rows": [
+    {
+      "method": "phasekv",
+      "kv_saving_pct": 86.84375,
+      "compression_ratio": 7.600950118764845,
+      "peak_gpu_mb": 1385.179136,
+      "ttft_ms": 37.744076922535896,
+      "tpot_ms": 32.589869266574055,
+      "decode_tps": 30.684382064264817,
+      "token_match_vs_full": 0.14583333333333334,
+      "perplexity": 2.3371915529238834,
+      "final_cache_bytes": 969984,
+      "full_ref_cache_bytes": 7372800,
+      "num_generated": 48,
+      "text": " and benefit from cheap streaming policies. The decode tokens arrive incrementally and benefit from cheap streaming policies. The prompt tokens are fixed and can be analyzed once, while the decode tokens arrive incrementally and benefit from cheap streaming policies. The prompt tokens",
+      "ppl_total_tokens": 1164
+    },
+    {
+      "method": "phasekv",
+      "kv_saving_pct": 77.72916666666667,
+      "compression_ratio": 4.490177736202058,
+      "peak_gpu_mb": 1385.179136,
+      "ttft_ms": 43.048836290836334,
+      "tpot_ms": 20.75156242527226,
+      "decode_tps": 48.1891425573889,
+      "token_match_vs_full": 0.2916666666666667,
+      "perplexity": 1.973995212194903,
+      "final_cache_bytes": 1641984,
+      "full_ref_cache_bytes": 7372800,
+      "num_generated": 48,
+      "text": " and benefit from cheap streaming policies. This document is used as a reference for the compression of the decode cache. The prompt tokens are fixed and can be analyzed once, while the decode tokens arrive incrementally and benefit from cheap streaming policies. This",
+      "ppl_total_tokens": 1164
+    },
+    {
+      "method": "phasekv",
+      "kv_saving_pct": 66.22916666666667,
+      "compression_ratio": 2.961135101789019,
+      "peak_gpu_mb": 1385.179136,
+      "ttft_ms": 38.18216733634472,
+      "tpot_ms": 24.51552314921579,
+      "decode_tps": 40.79048176591688,
+      "token_match_vs_full": 0.2708333333333333,
+      "perplexity": 1.9664358682997813,
+      "final_cache_bytes": 2489856,
+      "full_ref_cache_bytes": 7372800,
+      "num_generated": 48,
+      "text": " and benefit from cheap streaming policies. This document is used as a reference for the prefill cache and the decode cache. The prefill cache is a static cache that is preloaded with the entire input prompt. The decode cache is a dynamic",
+      "ppl_total_tokens": 1164
+    },
+    {
+      "method": "phasekv",
+      "kv_saving_pct": 55.822916666666664,
+      "compression_ratio": 2.263617071445414,
+      "peak_gpu_mb": 1385.179136,
+      "ttft_ms": 31.12274780869484,
+      "tpot_ms": 21.105145619429173,
+      "decode_tps": 47.38181001127093,
+      "token_match_vs_full": 0.2708333333333333,
+      "perplexity": 1.7881490284068282,
+      "final_cache_bytes": 3257088,
+      "full_ref_cache_bytes": 7372800,
+      "num_generated": 48,
+      "text": " and benefit from cheap streaming policies. This document is used as a reference corpus for the large language model inference benchmark. The corpus contains 100,000 training examples and 100,000 test examples.",
+      "ppl_total_tokens": 1164
+    }
+  ]
+}

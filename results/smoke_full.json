@@ -1,0 +1,99 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen2.5-0.5B-Instruct",
+    "dtype": "float16",
+    "attn_implementation": "sdpa",
+    "prompt_len": 552,
+    "max_new_tokens": 32,
+    "kv_dims": {
+      "num_layers": 24,
+      "num_kv_heads": 2,
+      "head_dim": 64
+    },
+    "device": "cuda",
+    "greedy": true,
+    "preset": "full"
+  },
+  "rows": [
+    {
+      "method": "full",
+      "kv_saving_pct": 0.1712328767123239,
+      "compression_ratio": 1.0017152658662092,
+      "peak_gpu_mb": 1181.443584,
+      "ttft_ms": 38.95687870681286,
+      "tpot_ms": 30.687122816039672,
+      "decode_tps": 32.58695857525346,
+      "token_match_vs_full": 1.0,
+      "perplexity": 1.7046461831987885,
+      "final_cache_bytes": 7163904,
+      "full_ref_cache_bytes": 7176192,
+      "num_generated": 32,
+      "text": " and benefit from cheap streaming policies. This document is used as a small offline corpus so that the perplexity smoke test can run without any network access. Large language",
+      "ppl_total_tokens": 1164
+    },
+    {
+      "method": "recent",
+      "kv_saving_pct": 56.16438356164384,
+      "compression_ratio": 2.28125,
+      "peak_gpu_mb": 1180.411904,
+      "ttft_ms": 40.278719272464514,
+      "tpot_ms": 26.039412830986322,
+      "decode_tps": 38.403323703598346,
+      "token_match_vs_full": 0.375,
+      "perplexity": 2.7552375867260057,
+      "final_cache_bytes": 3145728,
+      "full_ref_cache_bytes": 7176192,
+      "num_generated": 32,
+      "text": " and benefit from cheap streaming policies. This document is used used used used used used any network network network network network network network network network network network network network network network",
+      "ppl_total_tokens": 1164
+    },
+    {
+      "method": "streaming",
+      "kv_saving_pct": 55.47945205479452,
+      "compression_ratio": 2.246153846153846,
+      "peak_gpu_mb": 1180.411904,
+      "ttft_ms": 39.57684803754091,
+      "tpot_ms": 27.113928054008756,
+      "decode_tps": 36.88141378881292,
+      "token_match_vs_full": 1.0,
+      "perplexity": 1.8201510672030365,
+      "final_cache_bytes": 3194880,
+      "full_ref_cache_bytes": 7176192,
+      "num_generated": 32,
+      "text": " and benefit from cheap streaming policies. This document is used as a small offline corpus so that the perplexity smoke test can run without any network access. Large language",
+      "ppl_total_tokens": 1164
+    },
+    {
+      "method": "kvquant",
+      "kv_saving_pct": 46.96596746575342,
+      "compression_ratio": 1.8855816769246292,
+      "peak_gpu_mb": 1181.443584,
+      "ttft_ms": 37.93680388480425,
+      "tpot_ms": 26.25151436715837,
+      "decode_tps": 38.09304050097153,
+      "token_match_vs_full": 1.0,
+      "perplexity": 1.7047107604021379,
+      "final_cache_bytes": 3805824,
+      "full_ref_cache_bytes": 7176192,
+      "num_generated": 32,
+      "text": " and benefit from cheap streaming policies. This document is used as a small offline corpus so that the perplexity smoke test can run without any network access. Large language",
+      "ppl_total_tokens": 1164
+    },
+    {
+      "method": "kvquant",
+      "kv_saving_pct": 71.92315924657534,
+      "compression_ratio": 3.5616542786354106,
+      "peak_gpu_mb": 1181.443584,
+      "ttft_ms": 36.330162081867456,
+      "tpot_ms": 27.321325179429785,
+      "decode_tps": 36.60144569974591,
+      "token_match_vs_full": 0.59375,
+      "perplexity": 1.7220605013740284,
+      "final_cache_bytes": 2014848,
+      "full_ref_cache_bytes": 7176192,
+      "num_generated": 32,
+      "text": " and benefit from cheap streaming policies. This document is used as a small offline corpus so that the reperplexity smoke test can run without any network access.",
+      "ppl_total_tokens": 1164
+    }
+  ]
+}

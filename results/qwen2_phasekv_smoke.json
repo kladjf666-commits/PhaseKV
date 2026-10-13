@@ -1,0 +1,178 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen2-1.5B-Instruct",
+    "mode": "greedy",
+    "seed": 1234,
+    "seeds_per_case": 1,
+    "max_new_tokens": 16,
+    "warmup_per_case": true,
+    "phase_kwargs": {
+      "prompt_bits": 2,
+      "cold_bits": 4,
+      "prefill_keep_ratio": 0.5,
+      "decode_keep_ratio": 0.5,
+      "recent_window": 32
+    },
+    "torch": "2.5.1+cu121",
+    "transformers": "4.46.3",
+    "gpu": "NVIDIA GeForce RTX 3070 Ti Laptop GPU"
+  },
+  "cases": [
+    {
+      "id": "arithmetic",
+      "messages": [
+        {
+          "role": "system",
+          "content": "You are a helpful assistant."
+        },
+        {
+          "role": "user",
+          "content": "17 加 25 等于多少？只回答数字。"
+        }
+      ],
+      "answers": [
+        "42"
+      ]
+    },
+    {
+      "id": "extract",
+      "messages": [
+        {
+          "role": "system",
+          "content": "You are a helpful assistant."
+        },
+        {
+          "role": "user",
+          "content": "记录：订单 A 的验证码是 739284，订单 B 的验证码是 815603。订单 A 的验证码是什么？只回答数字。"
+        }
+      ],
+      "answers": [
+        "739284"
+      ]
+    }
+  ],
+  "pairs": [
+    {
+      "case_id": "arithmetic",
+      "seed": 1234,
+      "full": {
+        "case_id": "arithmetic",
+        "method": "full",
+        "seed": 1234,
+        "prompt_tokens": 35,
+        "generated_tokens": 2,
+        "stop_reason": "eos",
+        "answer_hit": true,
+        "repeat4_fraction": 0.0,
+        "setup_ms": 16.68356300024243,
+        "tpot_ms": 13.27065199984645,
+        "total_ms": 43.22486699993533,
+        "peak_gpu_bytes": 3109281280,
+        "kv_bytes": 1060864,
+        "text": "42",
+        "generated_ids": [
+          19,
+          17
+        ]
+      },
+      "phasekv": {
+        "case_id": "arithmetic",
+        "method": "phasekv",
+        "seed": 1234,
+        "prompt_tokens": 35,
+        "generated_tokens": 2,
+        "stop_reason": "eos",
+        "answer_hit": false,
+        "repeat4_fraction": 0.0,
+        "setup_ms": 26.143142999899283,
+        "tpot_ms": 18.26908299972274,
+        "total_ms": 62.681308999344765,
+        "peak_gpu_bytes": 3111632384,
+        "kv_bytes": 1489152,
+        "text": "45",
+        "generated_ids": [
+          19,
+          20
+        ]
+      },
+      "token_match": 0.5,
+      "first_divergence": 1,
+      "kv_compression_ratio": 0.7123947051744886
+    },
+    {
+      "case_id": "extract",
+      "seed": 1234,
+      "full": {
+        "case_id": "extract",
+        "method": "full",
+        "seed": 1234,
+        "prompt_tokens": 57,
+        "generated_tokens": 6,
+        "stop_reason": "eos",
+        "answer_hit": true,
+        "repeat4_fraction": 0.0,
+        "setup_ms": 16.182532000129868,
+        "tpot_ms": 13.422986000099021,
+        "total_ms": 96.72044800072399,
+        "peak_gpu_bytes": 3116597248,
+        "kv_bytes": 1806336,
+        "text": "739284",
+        "generated_ids": [
+          22,
+          18,
+          24,
+          17,
+          23,
+          19
+        ]
+      },
+      "phasekv": {
+        "case_id": "extract",
+        "method": "phasekv",
+        "seed": 1234,
+        "prompt_tokens": 57,
+        "generated_tokens": 2,
+        "stop_reason": "eos",
+        "answer_hit": false,
+        "repeat4_fraction": 0.0,
+        "setup_ms": 28.445622000162984,
+        "tpot_ms": 19.177007500047694,
+        "total_ms": 66.79963700025837,
+        "peak_gpu_bytes": 3120338944,
+        "kv_bytes": 1530368,
+        "text": "75",
+        "generated_ids": [
+          22,
+          20
+        ]
+      },
+      "token_match": 0.5,
+      "first_divergence": 1,
+      "kv_compression_ratio": 1.180327868852459
+    }
+  ],
+  "summary": {
+    "full": {
+      "runs": 2,
+      "answer_hit_rate": 1.0,
+      "mean_repeat4_fraction": 0.0,
+      "max_token_runs": 0,
+      "median_setup_ms": 16.43304750018615,
+      "median_tpot_ms": 13.346818999972736,
+      "median_total_ms": 69.97265750032966,
+      "median_peak_gpu_mib": 2968.730224609375,
+      "median_kv_mib": 1.3671875
+    },
+    "phasekv": {
+      "runs": 2,
+      "answer_hit_rate": 0.0,
+      "mean_repeat4_fraction": 0.0,
+      "max_token_runs": 0,
+      "median_setup_ms": 27.294382500031134,
+      "median_tpot_ms": 18.723045249885217,
+      "median_total_ms": 64.74047299980157,
+      "median_peak_gpu_mib": 2971.635498046875,
+      "median_kv_mib": 1.4398193359375
+    }
+  }
+}

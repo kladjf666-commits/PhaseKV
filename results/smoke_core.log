@@ -1,0 +1,19 @@
+We detected that you are passing `past_key_values` as a tuple and this is deprecated and will be removed in v4.43. Please use an appropriate `Cache` class (https://huggingface.co/docs/transformers/v4.41.3/en/internal/generation_utils#transformers.Cache)
+Traceback (most recent call last):
+  File "/root/miniconda3/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/root/miniconda3/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "/root/autodl-tmp/1340/release/kvcomp/eval/run_benchmark.py", line 111, in <module>
+    main()
+  File "/root/autodl-tmp/1340/release/kvcomp/eval/run_benchmark.py", line 100, in main
+    result = run_benchmark(cfg)
+  File "/root/autodl-tmp/1340/release/kvcomp/eval/runner.py", line 67, in run_benchmark
+    full_gen = runtime.generate_with_compression(
+  File "/root/miniconda3/lib/python3.10/site-packages/torch/utils/_contextlib.py", line 115, in decorate_context
+    return func(*args, **kwargs)
+  File "/root/autodl-tmp/1340/release/kvcomp/eval/runtime.py", line 98, in generate_with_compression
+    cache_bytes_trace = [compressor.cache_memory_bytes(cache)]
+  File "/root/autodl-tmp/1340/release/kvcomp/eval/interface.py", line 149, in cache_memory_bytes
+    raise TypeError("cache 必须暴露 key_cache / value_cache (transformers Cache 协议)")
+TypeError: cache 必须暴露 key_cache / value_cache (transformers Cache 协议)

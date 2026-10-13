@@ -1,0 +1,83 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen2.5-0.5B-Instruct",
+    "dtype": "float16",
+    "attn_implementation": "eager",
+    "prompt_len": 280,
+    "max_new_tokens": 32,
+    "kv_dims": {
+      "num_layers": 24,
+      "num_kv_heads": 2,
+      "head_dim": 64
+    },
+    "device": "cuda",
+    "greedy": true,
+    "preset": "custom"
+  },
+  "rows": [
+    {
+      "method": "full",
+      "kv_saving_pct": 0.3205128205128194,
+      "compression_ratio": 1.0032154340836013,
+      "peak_gpu_mb": 1095.36768,
+      "ttft_ms": 35.286768805235624,
+      "tpot_ms": 33.30551117898956,
+      "decode_tps": 30.02506085631977,
+      "token_match_vs_full": 1.0,
+      "perplexity": 1.7048518383685618,
+      "final_cache_bytes": 3821568,
+      "full_ref_cache_bytes": 3833856,
+      "num_generated": 32,
+      "text": " latency. Compressing the key-value cache is therefore a central problem for efficient serving of large language models on modern accelerators. A promising direction is to apply",
+      "ppl_total_tokens": 1164
+    },
+    {
+      "method": "snapkv",
+      "kv_saving_pct": 45.192307692307686,
+      "compression_ratio": 1.8245614035087718,
+      "peak_gpu_mb": 1147.478016,
+      "ttft_ms": 36.12165618687868,
+      "tpot_ms": 22.98372635437596,
+      "decode_tps": 43.50904568656275,
+      "token_match_vs_full": 0.625,
+      "perplexity": 1.966692529020995,
+      "final_cache_bytes": 2101248,
+      "full_ref_cache_bytes": 3833856,
+      "num_generated": 32,
+      "text": " latency. Compressing the key-value cache is therefore a central problem for efficient inference of large language models. A key challenge is to find a compression method that",
+      "ppl_total_tokens": 1164
+    },
+    {
+      "method": "kivi",
+      "kv_saving_pct": 58.65384615384615,
+      "compression_ratio": 2.4186046511627906,
+      "peak_gpu_mb": 1095.36768,
+      "ttft_ms": 29.51366873458028,
+      "tpot_ms": 23.950654232213573,
+      "decode_tps": 41.752512908603656,
+      "token_match_vs_full": 0.65625,
+      "perplexity": 1.7574423011040463,
+      "final_cache_bytes": 1585152,
+      "full_ref_cache_bytes": 3833856,
+      "num_generated": 32,
+      "text": " latency. Compressing the key-value cache is therefore a central problem for efficient serving of large language models. A promising direction is to apply different compression strategies to",
+      "ppl_total_tokens": 1164
+    },
+    {
+      "method": "scope",
+      "kv_saving_pct": 5.128205128205132,
+      "compression_ratio": 1.054054054054054,
+      "peak_gpu_mb": 1148.24704,
+      "ttft_ms": 26.999775785952806,
+      "tpot_ms": 21.83981402026069,
+      "decode_tps": 45.78793569726853,
+      "token_match_vs_full": 1.0,
+      "perplexity": 1.7024926376840064,
+      "final_cache_bytes": 3637248,
+      "full_ref_cache_bytes": 3833856,
+      "num_generated": 32,
+      "text": " latency. Compressing the key-value cache is therefore a central problem for efficient serving of large language models on modern accelerators. A promising direction is to apply",
+      "ppl_total_tokens": 1164
+    }
+  ]
+}

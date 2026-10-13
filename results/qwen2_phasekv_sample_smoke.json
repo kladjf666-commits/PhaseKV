@@ -1,0 +1,158 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen2-1.5B-Instruct",
+    "mode": "sample",
+    "seed": 1234,
+    "seeds_per_case": 2,
+    "max_new_tokens": 32,
+    "warmup_per_case": true,
+    "phase_kwargs": {
+      "prompt_bits": 2,
+      "cold_bits": 4,
+      "prefill_keep_ratio": 0.5,
+      "decode_keep_ratio": 0.5,
+      "recent_window": 32
+    },
+    "torch": "2.5.1+cu121",
+    "transformers": "4.46.3",
+    "gpu": "NVIDIA GeForce RTX 3070 Ti Laptop GPU"
+  },
+  "cases": [
+    {
+      "id": "arithmetic",
+      "messages": [
+        {
+          "role": "system",
+          "content": "You are a helpful assistant."
+        },
+        {
+          "role": "user",
+          "content": "17 加 25 等于多少？只回答数字。"
+        }
+      ],
+      "answers": [
+        "42"
+      ]
+    }
+  ],
+  "pairs": [
+    {
+      "case_id": "arithmetic",
+      "seed": 1234,
+      "full": {
+        "case_id": "arithmetic",
+        "method": "full",
+        "seed": 1234,
+        "prompt_tokens": 35,
+        "generated_tokens": 2,
+        "stop_reason": "eos",
+        "answer_hit": true,
+        "repeat4_fraction": 0.0,
+        "setup_ms": 15.602002999912656,
+        "tpot_ms": 12.834990500095955,
+        "total_ms": 41.27198400010457,
+        "peak_gpu_bytes": 3115486208,
+        "kv_bytes": 1060864,
+        "text": "42",
+        "generated_ids": [
+          19,
+          17
+        ]
+      },
+      "phasekv": {
+        "case_id": "arithmetic",
+        "method": "phasekv",
+        "seed": 1234,
+        "prompt_tokens": 35,
+        "generated_tokens": 2,
+        "stop_reason": "eos",
+        "answer_hit": false,
+        "repeat4_fraction": 0.0,
+        "setup_ms": 25.646864999998797,
+        "tpot_ms": 18.139644500024588,
+        "total_ms": 61.92615400004797,
+        "peak_gpu_bytes": 3117837312,
+        "kv_bytes": 1489152,
+        "text": "45",
+        "generated_ids": [
+          19,
+          20
+        ]
+      },
+      "token_match": 0.5,
+      "first_divergence": 1,
+      "kv_compression_ratio": 0.7123947051744886
+    },
+    {
+      "case_id": "arithmetic",
+      "seed": 1235,
+      "full": {
+        "case_id": "arithmetic",
+        "method": "full",
+        "seed": 1235,
+        "prompt_tokens": 35,
+        "generated_tokens": 2,
+        "stop_reason": "eos",
+        "answer_hit": true,
+        "repeat4_fraction": 0.0,
+        "setup_ms": 15.529878000052122,
+        "tpot_ms": 12.626399500049956,
+        "total_ms": 40.782677000152034,
+        "peak_gpu_bytes": 3115486208,
+        "kv_bytes": 1060864,
+        "text": "42",
+        "generated_ids": [
+          19,
+          17
+        ]
+      },
+      "phasekv": {
+        "case_id": "arithmetic",
+        "method": "phasekv",
+        "seed": 1235,
+        "prompt_tokens": 35,
+        "generated_tokens": 2,
+        "stop_reason": "eos",
+        "answer_hit": false,
+        "repeat4_fraction": 0.0,
+        "setup_ms": 24.740737000229274,
+        "tpot_ms": 17.39483200003633,
+        "total_ms": 59.530401000301936,
+        "peak_gpu_bytes": 3117837312,
+        "kv_bytes": 1489152,
+        "text": "45",
+        "generated_ids": [
+          19,
+          20
+        ]
+      },
+      "token_match": 0.5,
+      "first_divergence": 1,
+      "kv_compression_ratio": 0.7123947051744886
+    }
+  ],
+  "summary": {
+    "full": {
+      "runs": 2,
+      "answer_hit_rate": 1.0,
+      "mean_repeat4_fraction": 0.0,
+      "max_token_runs": 0,
+      "median_setup_ms": 15.56594049998239,
+      "median_tpot_ms": 12.730695000072956,
+      "median_total_ms": 41.0273305001283,
+      "median_peak_gpu_mib": 2971.1591796875,
+      "median_kv_mib": 1.01171875
+    },
+    "phasekv": {
+      "runs": 2,
+      "answer_hit_rate": 0.0,
+      "mean_repeat4_fraction": 0.0,
+      "max_token_runs": 0,
+      "median_setup_ms": 25.193801000114036,
+      "median_tpot_ms": 17.76723825003046,
+      "median_total_ms": 60.728277500174954,
+      "median_peak_gpu_mib": 2973.4013671875,
+      "median_kv_mib": 1.420166015625
+    }
+  }
+}

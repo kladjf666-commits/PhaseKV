@@ -1,0 +1,656 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen2-1.5B-Instruct",
+    "mode": "greedy",
+    "seed": 1234,
+    "seeds_per_case": 1,
+    "max_new_tokens": 96,
+    "warmup_per_case": true,
+    "phase_kwargs": {
+      "prompt_bits": 8,
+      "cold_bits": 8,
+      "prefill_keep_ratio": 1.0,
+      "decode_keep_ratio": 1.0,
+      "recent_window": 32
+    },
+    "torch": "2.5.1+cu121",
+    "transformers": "4.46.3",
+    "gpu": "NVIDIA GeForce RTX 3070 Ti Laptop GPU"
+  },
+  "cases": [
+    {
+      "id": "arithmetic",
+      "messages": [
+        {
+          "role": "system",
+          "content": "You are a helpful assistant."
+        },
+        {
+          "role": "user",
+          "content": "17 加 25 等于多少？只回答数字。"
+        }
+      ],
+      "answers": [
+        "42"
+      ]
+    },
+    {
+      "id": "extract",
+      "messages": [
+        {
+          "role": "system",
+          "content": "You are a helpful assistant."
+        },
+        {
+          "role": "user",
+          "content": "记录：订单 A 的验证码是 739284，订单 B 的验证码是 815603。订单 A 的验证码是什么？只回答数字。"
+        }
+      ],
+      "answers": [
+        "739284"
+      ]
+    },
+    {
+      "id": "history",
+      "messages": [
+        {
+          "role": "system",
+          "content": "You are a helpful assistant."
+        },
+        {
+          "role": "user",
+          "content": "请记住我的代号是蓝鲸七号。"
+        },
+        {
+          "role": "assistant",
+          "content": "好的，我会记住。"
+        },
+        {
+          "role": "user",
+          "content": "我的代号是什么？只回答代号。"
+        }
+      ],
+      "answers": [
+        "蓝鲸七号"
+      ]
+    },
+    {
+      "id": "long_followup",
+      "messages": [
+        {
+          "role": "system",
+          "content": "You are a helpful assistant."
+        },
+        {
+          "role": "user",
+          "content": "为我介绍一下大模型。"
+        },
+        {
+          "role": "assistant",
+          "content": "您好，有什么问题我可以帮助您解答吗？"
+        },
+        {
+          "role": "user",
+          "content": "请详细介绍大模型的原理、用途和局限，至少写三段。"
+        }
+      ],
+      "answers": []
+    },
+    {
+      "id": "needle_0",
+      "messages": [
+        {
+          "role": "system",
+          "content": "You are a helpful assistant."
+        },
+        {
+          "role": "user",
+          "content": "The grass is green and the sky is blue on an ordinary calm afternoon. People walk slowly through the quiet park while the gentle wind moves the leaves. The grass is green and the sky is blue on an ordinary calm afternoon. People walk slowly through the quiet park while the gentle wind moves the leaves. The grass is green and the sky is blue on an ordinary calm afternoon. People walk slowly through the quiet park while the gentle wind moves the leaves. The special magic number for session 0 is 224906. The grass is green and the sky is blue on an ordinary calm afternoon. People walk slowly through the quiet park while the gentle wind moves the leaves. The grass is green and the sky is blue on an ordinary calm afternoon. People walk slowly through the quiet park while the gentle wind moves the leaves. The grass is green and the sky is blue on an ordinary calm afternoon. People walk slowly through the quiet park while the gentle wind moves the leaves. The grass is green and the sky is blue on an ordinary calm afternoon. People walk slowly through the quiet park while the gentle wind moves the leaves. The grass is green and the sky is blue on an ordinary calm afternoon. People walk slowly through the quiet park while the gentle wind moves the leaves. The grass is green and the sky is blue on an ordinary calm afternoon. People walk slowly through the quiet park while the gentle wind moves the leaves. The grass is green and the sky is blue on an ordinary calm afternoon. People walk slowly through the quiet park while the gentle wind moves the leaves. \n\nWhat is the special magic number for session 0? Answer with only the number."
+        }
+      ],
+      "answers": [
+        "224906"
+      ]
+    },
+    {
+      "id": "needle_1",
+      "messages": [
+        {
+          "role": "system",
+          "content": "You are a helpful assistant."
+        },
+        {
+          "role": "user",
+          "content": "The grass is green and the sky is blue on an ordinary calm afternoon. People walk slowly through the quiet park while the gentle wind moves the leaves. The grass is green and the sky is blue on an ordinary calm afternoon. People walk slowly through the quiet park while the gentle wind moves the leaves. The grass is green and the sky is blue on an ordinary calm afternoon. People walk slowly through the quiet park while the gentle wind moves the leaves. The grass is green and the sky is blue on an ordinary calm afternoon. People walk slowly through the quiet park while the gentle wind moves the leaves. The grass is green and the sky is blue on an ordinary calm afternoon. People walk slowly through the quiet park while the gentle wind moves the leaves. The grass is green and the sky is blue on an ordinary calm afternoon. People walk slowly through the quiet park while the gentle wind moves the leaves. The special magic number for session 1 is 435003. The grass is green and the sky is blue on an ordinary calm afternoon. People walk slowly through the quiet park while the gentle wind moves the leaves. The grass is green and the sky is blue on an ordinary calm afternoon. People walk slowly through the quiet park while the gentle wind moves the leaves. The grass is green and the sky is blue on an ordinary calm afternoon. People walk slowly through the quiet park while the gentle wind moves the leaves. The grass is green and the sky is blue on an ordinary calm afternoon. People walk slowly through the quiet park while the gentle wind moves the leaves. \n\nWhat is the special magic number for session 1? Answer with only the number."
+        }
+      ],
+      "answers": [
+        "435003"
+      ]
+    }
+  ],
+  "pairs": [
+    {
+      "case_id": "arithmetic",
+      "seed": 1234,
+      "full": {
+        "case_id": "arithmetic",
+        "method": "full",
+        "seed": 1234,
+        "prompt_tokens": 35,
+        "generated_tokens": 2,
+        "stop_reason": "eos",
+        "answer_hit": true,
+        "repeat4_fraction": 0.0,
+        "setup_ms": 16.311200999552966,
+        "tpot_ms": 13.554336000197509,
+        "total_ms": 43.419872999947984,
+        "peak_gpu_bytes": 3109281280,
+        "kv_bytes": 1060864,
+        "text": "42",
+        "generated_ids": [
+          19,
+          17
+        ]
+      },
+      "phasekv": {
+        "case_id": "arithmetic",
+        "method": "phasekv",
+        "seed": 1234,
+        "prompt_tokens": 35,
+        "generated_tokens": 2,
+        "stop_reason": "eos",
+        "answer_hit": true,
+        "repeat4_fraction": 0.0,
+        "setup_ms": 24.74006200009171,
+        "tpot_ms": 20.471385500059114,
+        "total_ms": 65.68283300020994,
+        "peak_gpu_bytes": 3112119808,
+        "kv_bytes": 1966720,
+        "text": "42",
+        "generated_ids": [
+          19,
+          17
+        ]
+      },
+      "token_match": 1.0,
+      "first_divergence": null,
+      "kv_compression_ratio": 0.5394077448747152
+    },
+    {
+      "case_id": "extract",
+      "seed": 1234,
+      "full": {
+        "case_id": "extract",
+        "method": "full",
+        "seed": 1234,
+        "prompt_tokens": 57,
+        "generated_tokens": 6,
+        "stop_reason": "eos",
+        "answer_hit": true,
+        "repeat4_fraction": 0.0,
+        "setup_ms": 17.58144499945047,
+        "tpot_ms": 13.159338833550768,
+        "total_ms": 96.53747800075507,
+        "peak_gpu_bytes": 3116597248,
+        "kv_bytes": 1806336,
+        "text": "739284",
+        "generated_ids": [
+          22,
+          18,
+          24,
+          17,
+          23,
+          19
+        ]
+      },
+      "phasekv": {
+        "case_id": "extract",
+        "method": "phasekv",
+        "seed": 1234,
+        "prompt_tokens": 57,
+        "generated_tokens": 6,
+        "stop_reason": "eos",
+        "answer_hit": true,
+        "repeat4_fraction": 0.0,
+        "setup_ms": 26.31743500023731,
+        "tpot_ms": 20.57047216673406,
+        "total_ms": 149.74026800064166,
+        "peak_gpu_bytes": 3121113088,
+        "kv_bytes": 2301824,
+        "text": "739284",
+        "generated_ids": [
+          22,
+          18,
+          24,
+          17,
+          23,
+          19
+        ]
+      },
+      "token_match": 1.0,
+      "first_divergence": null,
+      "kv_compression_ratio": 0.784741144414169
+    },
+    {
+      "case_id": "history",
+      "seed": 1234,
+      "full": {
+        "case_id": "history",
+        "method": "full",
+        "seed": 1234,
+        "prompt_tokens": 55,
+        "generated_tokens": 4,
+        "stop_reason": "eos",
+        "answer_hit": true,
+        "repeat4_fraction": 0.0,
+        "setup_ms": 16.96352199996909,
+        "tpot_ms": 13.289784249991499,
+        "total_ms": 70.12265899993508,
+        "peak_gpu_bytes": 3115996160,
+        "kv_bytes": 1691648,
+        "text": "蓝鲸七号",
+        "generated_ids": [
+          100400,
+          111712,
+          99612,
+          17992
+        ]
+      },
+      "phasekv": {
+        "case_id": "history",
+        "method": "phasekv",
+        "seed": 1234,
+        "prompt_tokens": 55,
+        "generated_tokens": 4,
+        "stop_reason": "eos",
+        "answer_hit": true,
+        "repeat4_fraction": 0.0,
+        "setup_ms": 26.275567999618943,
+        "tpot_ms": 20.133706499791515,
+        "total_ms": 106.810393998785,
+        "peak_gpu_bytes": 3120325632,
+        "kv_bytes": 2271360,
+        "text": "蓝鲸七号",
+        "generated_ids": [
+          100400,
+          111712,
+          99612,
+          17992
+        ]
+      },
+      "token_match": 1.0,
+      "first_divergence": null,
+      "kv_compression_ratio": 0.7447731755424063
+    },
+    {
+      "case_id": "long_followup",
+      "seed": 1234,
+      "full": {
+        "case_id": "long_followup",
+        "method": "full",
+        "seed": 1234,
+        "prompt_tokens": 61,
+        "generated_tokens": 96,
+        "stop_reason": "max_new_tokens",
+        "answer_hit": null,
+        "repeat4_fraction": 0.021505376344086023,
+        "setup_ms": 17.478517999734322,
+        "tpot_ms": 13.028857599984851,
+        "total_ms": 1255.2199899982952,
+        "peak_gpu_bytes": 3118265344,
+        "kv_bytes": 4472832,
+        "text": "大模型是一种基于深度学习的模型，它能够从大量数据中学习到复杂的特征和模式，从而实现对复杂问题的解决。大模型的原理是通过构建大量的神经网络，让每个神经网络学习到不同的特征和模式，然后将这些特征和模式组合起来，形成一个整体的模型。大模型的用途非常广泛，可以用于自然语言处理、计算机视觉、语音识别、机器翻译等领域，也可以用于推荐系统、聊天",
+        "generated_ids": [
+          26288,
+          104949,
+          101158,
+          104210,
+          102217,
+          100134,
+          9370,
+          104949,
+          3837,
+          99652,
+          100006,
+          45181,
+          100722,
+          20074,
+          15946,
+          100134,
+          26939,
+          106888,
+          104363,
+          33108,
+          100144,
+          3837,
+          101982,
+          101884,
+          32664,
+          102181,
+          86119,
+          9370,
+          100638,
+          1773,
+          26288,
+          104949,
+          9370,
+          105318,
+          20412,
+          67338,
+          104004,
+          101514,
+          102398,
+          71356,
+          3837,
+          99258,
+          103991,
+          102398,
+          71356,
+          100134,
+          26939,
+          101970,
+          104363,
+          33108,
+          100144,
+          3837,
+          101889,
+          44063,
+          100001,
+          104363,
+          33108,
+          100144,
+          101220,
+          99793,
+          3837,
+          101894,
+          46944,
+          101932,
+          9370,
+          104949,
+          1773,
+          26288,
+          104949,
+          9370,
+          105795,
+          99491,
+          100789,
+          3837,
+          73670,
+          100751,
+          99795,
+          102064,
+          54542,
+          5373,
+          104564,
+          104916,
+          5373,
+          105761,
+          102450,
+          5373,
+          102182,
+          105395,
+          106483,
+          3837,
+          104047,
+          100751,
+          101914,
+          72448,
+          5373,
+          105292
+        ]
+      },
+      "phasekv": {
+        "case_id": "long_followup",
+        "method": "phasekv",
+        "seed": 1234,
+        "prompt_tokens": 61,
+        "generated_tokens": 96,
+        "stop_reason": "max_new_tokens",
+        "answer_hit": null,
+        "repeat4_fraction": 0.021505376344086023,
+        "setup_ms": 26.28879500025505,
+        "tpot_ms": 22.714081631631032,
+        "total_ms": 2184.126550005203,
+        "peak_gpu_bytes": 3123153920,
+        "kv_bytes": 3179904,
+        "text": "大模型是一种基于深度学习的模型，它能够从大量数据中学习到复杂的特征和模式，从而实现对复杂问题的解决。大模型的原理是通过构建大量的神经网络，让每个神经网络学习到不同的特征和模式，然后将这些特征和模式组合起来，形成一个整体的模型。大模型的用途非常广泛，可以用于自然语言处理、计算机视觉、语音识别、机器翻译等领域。然而，大模型也存在",
+        "generated_ids": [
+          26288,
+          104949,
+          101158,
+          104210,
+          102217,
+          100134,
+          9370,
+          104949,
+          3837,
+          99652,
+          100006,
+          45181,
+          100722,
+          20074,
+          15946,
+          100134,
+          26939,
+          106888,
+          104363,
+          33108,
+          100144,
+          3837,
+          101982,
+          101884,
+          32664,
+          102181,
+          86119,
+          9370,
+          100638,
+          1773,
+          26288,
+          104949,
+          9370,
+          105318,
+          20412,
+          67338,
+          104004,
+          101514,
+          102398,
+          71356,
+          3837,
+          99258,
+          103991,
+          102398,
+          71356,
+          100134,
+          26939,
+          101970,
+          104363,
+          33108,
+          100144,
+          3837,
+          101889,
+          44063,
+          100001,
+          104363,
+          33108,
+          100144,
+          101220,
+          99793,
+          3837,
+          101894,
+          46944,
+          101932,
+          9370,
+          104949,
+          1773,
+          26288,
+          104949,
+          9370,
+          105795,
+          99491,
+          100789,
+          3837,
+          73670,
+          100751,
+          99795,
+          102064,
+          54542,
+          5373,
+          104564,
+          104916,
+          5373,
+          105761,
+          102450,
+          5373,
+          102182,
+          105395,
+          106483,
+          1773,
+          103968,
+          3837,
+          26288,
+          104949,
+          74763,
+          47606
+        ]
+      },
+      "token_match": 0.9270833333333334,
+      "first_divergence": 89,
+      "kv_compression_ratio": 1.4065934065934067
+    },
+    {
+      "case_id": "needle_0",
+      "seed": 1234,
+      "full": {
+        "case_id": "needle_0",
+        "method": "full",
+        "seed": 1234,
+        "prompt_tokens": 354,
+        "generated_tokens": 6,
+        "stop_reason": "eos",
+        "answer_hit": true,
+        "repeat4_fraction": 0.0,
+        "setup_ms": 53.07833799997752,
+        "tpot_ms": 13.899671166806607,
+        "total_ms": 136.47636500081717,
+        "peak_gpu_bytes": 3216442368,
+        "kv_bytes": 10321920,
+        "text": "224906",
+        "generated_ids": [
+          17,
+          17,
+          19,
+          24,
+          15,
+          21
+        ]
+      },
+      "phasekv": {
+        "case_id": "needle_0",
+        "method": "phasekv",
+        "seed": 1234,
+        "prompt_tokens": 354,
+        "generated_tokens": 6,
+        "stop_reason": "eos",
+        "answer_hit": true,
+        "repeat4_fraction": 0.0,
+        "setup_ms": 67.0300040001166,
+        "tpot_ms": 20.73582033335697,
+        "total_ms": 191.44492600025842,
+        "peak_gpu_bytes": 3308255232,
+        "kv_bytes": 7112448,
+        "text": "224906",
+        "generated_ids": [
+          17,
+          17,
+          19,
+          24,
+          15,
+          21
+        ]
+      },
+      "token_match": 1.0,
+      "first_divergence": null,
+      "kv_compression_ratio": 1.4512471655328798
+    },
+    {
+      "case_id": "needle_1",
+      "seed": 1234,
+      "full": {
+        "case_id": "needle_1",
+        "method": "full",
+        "seed": 1234,
+        "prompt_tokens": 354,
+        "generated_tokens": 6,
+        "stop_reason": "eos",
+        "answer_hit": true,
+        "repeat4_fraction": 0.0,
+        "setup_ms": 56.52042200017604,
+        "tpot_ms": 13.87696216625045,
+        "total_ms": 139.78219499767874,
+        "peak_gpu_bytes": 3216442368,
+        "kv_bytes": 10321920,
+        "text": "435003",
+        "generated_ids": [
+          19,
+          18,
+          20,
+          15,
+          15,
+          18
+        ]
+      },
+      "phasekv": {
+        "case_id": "needle_1",
+        "method": "phasekv",
+        "seed": 1234,
+        "prompt_tokens": 354,
+        "generated_tokens": 6,
+        "stop_reason": "eos",
+        "answer_hit": true,
+        "repeat4_fraction": 0.0,
+        "setup_ms": 70.36359700032335,
+        "tpot_ms": 20.730186166929343,
+        "total_ms": 194.7447140018994,
+        "peak_gpu_bytes": 3308255232,
+        "kv_bytes": 7112448,
+        "text": "435003",
+        "generated_ids": [
+          19,
+          18,
+          20,
+          15,
+          15,
+          18
+        ]
+      },
+      "token_match": 1.0,
+      "first_divergence": null,
+      "kv_compression_ratio": 1.4512471655328798
+    }
+  ],
+  "summary": {
+    "full": {
+      "runs": 6,
+      "answer_hit_rate": 1.0,
+      "mean_repeat4_fraction": 0.003584229390681004,
+      "max_token_runs": 1,
+      "median_setup_ms": 17.529981499592395,
+      "median_tpot_ms": 13.422060125094504,
+      "median_total_ms": 116.50692150078612,
+      "median_peak_gpu_mib": 2973.01416015625,
+      "median_kv_mib": 2.994140625
+    },
+    "phasekv": {
+      "runs": 6,
+      "answer_hit_rate": 1.0,
+      "mean_repeat4_fraction": 0.003584229390681004,
+      "max_token_runs": 1,
+      "median_setup_ms": 26.30311500024618,
+      "median_tpot_ms": 20.650329166831703,
+      "median_total_ms": 170.59259700045004,
+      "median_peak_gpu_mib": 2977.49853515625,
+      "median_kv_mib": 2.6138916015625
+    }
+  }
+}

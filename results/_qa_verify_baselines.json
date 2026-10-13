@@ -1,0 +1,83 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen2.5-0.5B-Instruct",
+    "dtype": "float16",
+    "attn_implementation": "eager",
+    "prompt_len": 552,
+    "max_new_tokens": 48,
+    "kv_dims": {
+      "num_layers": 24,
+      "num_kv_heads": 2,
+      "head_dim": 64
+    },
+    "device": "cuda",
+    "greedy": true,
+    "preset": "custom"
+  },
+  "rows": [
+    {
+      "method": "full",
+      "kv_saving_pct": 0.16666666666667052,
+      "compression_ratio": 1.001669449081803,
+      "peak_gpu_mb": 1181.500416,
+      "ttft_ms": 30.503938905894756,
+      "tpot_ms": 29.394414642469048,
+      "decode_tps": 34.020068511764144,
+      "token_match_vs_full": 1.0,
+      "perplexity": 1.7048518383685618,
+      "final_cache_bytes": 7360512,
+      "full_ref_cache_bytes": 7372800,
+      "num_generated": 48,
+      "text": " and benefit from cheap streaming policies. This document is used as a small offline corpus so that the perplexity smoke test can run without any network access. Large language model inference is dominated by two phases. During the prefill phase, the model",
+      "ppl_total_tokens": 1164
+    },
+    {
+      "method": "snapkv",
+      "kv_saving_pct": 64.5,
+      "compression_ratio": 2.816901408450704,
+      "peak_gpu_mb": 1385.179136,
+      "ttft_ms": 40.40460428223014,
+      "tpot_ms": 23.403409759494217,
+      "decode_tps": 42.72881645352226,
+      "token_match_vs_full": 0.20833333333333334,
+      "perplexity": 2.1871987503924717,
+      "final_cache_bytes": 2617344,
+      "full_ref_cache_bytes": 7372800,
+      "num_generated": 48,
+      "text": " and benefit from cheap streaming policies. This paper presents a novel approach to language model inference that is based on the idea of a \"prompt\" token. The prompt token is a fixed token that is used to analyze the input prompt. The prompt",
+      "ppl_total_tokens": 1164
+    },
+    {
+      "method": "kivi",
+      "kv_saving_pct": 73.83333333333333,
+      "compression_ratio": 3.821656050955414,
+      "peak_gpu_mb": 1181.500416,
+      "ttft_ms": 26.935853995382786,
+      "tpot_ms": 19.9840526849507,
+      "decode_tps": 50.03990010259858,
+      "token_match_vs_full": 1.0,
+      "perplexity": 1.7623693371047722,
+      "final_cache_bytes": 1929216,
+      "full_ref_cache_bytes": 7372800,
+      "num_generated": 48,
+      "text": " and benefit from cheap streaming policies. This document is used as a small offline corpus so that the perplexity smoke test can run without any network access. Large language model inference is dominated by two phases. During the prefill phase, the model",
+      "ppl_total_tokens": 1164
+    },
+    {
+      "method": "scope",
+      "kv_saving_pct": 4.0000000000000036,
+      "compression_ratio": 1.0416666666666667,
+      "peak_gpu_mb": 1386.632704,
+      "ttft_ms": 26.636722963303328,
+      "tpot_ms": 20.005067017801267,
+      "decode_tps": 49.987335664017635,
+      "token_match_vs_full": 1.0,
+      "perplexity": 1.702430058191183,
+      "final_cache_bytes": 7077888,
+      "full_ref_cache_bytes": 7372800,
+      "num_generated": 48,
+      "text": " and benefit from cheap streaming policies. This document is used as a small offline corpus so that the perplexity smoke test can run without any network access. Large language model inference is dominated by two phases. During the prefill phase, the model",
+      "ppl_total_tokens": 1164
+    }
+  ]
+}
