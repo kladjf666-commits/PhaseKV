@@ -226,11 +226,13 @@ HF_HUB_OFFLINE=1 python scripts/run_longbench.py \
 python scripts/bench_decode_kernel.py
 
 # 当前真实 PhaseKVCache vs 普通 DynamicCache（内置六题、贪心解码、GPU 实测）
-python scripts/bench_qwen2_phasekv.py --out results/qwen2_phasekv_comparison
+python scripts/bench_qwen2_phasekv.py --prompt-bits 2 --prefill-keep-ratio 0.5 \
+  --out results/qwen2_phasekv_comparison
 
 # 专测长回复的随机重复；每种方法使用相同的固定种子
 python scripts/bench_qwen2_phasekv.py --case-id long_followup --mode sample \
-  --seeds 5 --max-new-tokens 256 --out results/qwen2_phasekv_long_sample
+  --seeds 5 --max-new-tokens 256 --prompt-bits 2 --prefill-keep-ratio 0.5 \
+  --out results/qwen2_phasekv_long_sample
 
 # 压缩强度消融：Prompt 全保留、8-bit
 python scripts/bench_qwen2_phasekv.py --prompt-bits 8 --cold-bits 8 \
@@ -240,6 +242,10 @@ python scripts/bench_qwen2_phasekv.py --prompt-bits 8 --cold-bits 8 \
 # 隔离 Prompt 位宽与 token 保留率的影响（真实 PhaseKVCache，六题）
 python scripts/ablate_qwen2_prompt.py \
   --out results/qwen2_phasekv_prompt_ablation
+
+# Prompt 全保留且 4-bit：对比不冷却、冷层量化、冷层 token 筛选
+python scripts/ablate_qwen2_cold.py \
+  --out results/qwen2_phasekv_cold_ablation
 
 # 图1 roofline 标定
 python scripts/roofline_measure.py
@@ -256,6 +262,10 @@ token 上限、setup/TPOT、峰值显存和常驻 KV 字节，保存同名 `.jso
 可用 `--cases-jsonl` 指向自定义题目，每行格式为
 `{"id":"case1","prompt":"问题","answers":["标准答案"]}`；也可用 `messages` 数组代替 `prompt`。
 `ablate_qwen2_prompt.py` 只比较贪心回答与 KV 大小，不报告未经逐配置预热的速度。
+`qwen2.py` 的交互默认配置为 Prompt 4-bit、100% 保留；首轮 prefill 后复用同一份
+PhaseKVCache，后续只输入新用户消息的 chat 模板 token，并将它们按 Prompt 位宽打包。
+`/clear` 才清空会话缓存。`ablate_qwen2_cold.py` 固定同一轮长回复前缀，隔离测试
+冷层量化和 50% token 筛选；结果见 `results/qwen2_phasekv_cold_ablation.md`。
 当前内置五道有标准答案的题中，100% 保留时 2/4/8-bit 分别命中 3/5、5/5、5/5；
 固定 8-bit 时，100%/75%/50%/25% 保留分别命中 5/5、3/5、0/5、0/5。
 这是用于定位问题的小样本结果，完整逐题输出见 `results/qwen2_phasekv_prompt_ablation.json`。

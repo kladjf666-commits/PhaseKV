@@ -631,6 +631,7 @@ def _kivi_layer_partial(q, key: PackedTensor, value: PackedTensor,
     return _reduce_splits(pm, pl, pacc)
 
 
+#该函数只能一次计算一个token的注意力
 def fused_phasekv_decode(q: torch.Tensor, tiers, num_attention_heads: int,
                          num_splits: int = 8, block_n: int = 64) -> torch.Tensor:
     """batch=1 的 PhaseKV 注意力：逐段读取 packed KV，再合并 softmax。
@@ -647,7 +648,7 @@ def fused_phasekv_decode(q: torch.Tensor, tiers, num_attention_heads: int,
                        orig_shape=pt.orig_shape[1:], axis=pt.axis - 1)
 
     partials = []
-    for segment in [tiers.prompt, *tiers.cold]:
+    for segment in [tiers.prompt, *tiers.prompt_extensions, *tiers.cold]:
         partials.append(_kivi_layer_partial(
             q, remove_batch(segment.key), remove_batch(segment.value),
             num_attention_heads, num_splits, block_n))
