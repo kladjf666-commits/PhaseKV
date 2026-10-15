@@ -11,11 +11,14 @@ dense 回退。因此 decode 的 HBM 读流量按位宽比例下降 —— 这�
 """
 from __future__ import annotations
 
+from functools import lru_cache
+
 import torch
 import triton
 import triton.language as tl
 
 from .packing import PackedTensor, _vals_per_byte
+from .launch_config import plan_kivi_decode
 
 
 @triton.jit
@@ -593,8 +596,14 @@ def _decode_attn_kivi_split_kernel(
     tl.store(pacc_ptr + qh * stride_pah + sp * stride_pas + d * stride_pad, acc)
 
 
+@lru_cache(maxsize=32)
+def _device_sm_count(device: torch.device) -> int:
+    return torch.cuda.get_device_properties(device).multi_processor_count
+
+
 def _kivi_layer_partial(q, key: PackedTensor, value: PackedTensor,
-                        num_attention_heads: int, num_splits: int, block_n: int):
+                        num_attention_heads: int, num_splits: int | None = None,
+                        block_n: int | None = None, num_warps: int | None = None):
     """读取一个真实 PhaseKV packed 段，返回可跨段合并的 softmax partial。"""
     if key.axis != 1 or value.axis != 2 or len(key.orig_shape) != 3:
         raise ValueError("K 应沿 token 轴、V 应沿 head_dim 轴打包，且 batch=1 已移除")
@@ -607,11 +616,10 @@ def _kivi_layer_partial(q, key: PackedTensor, value: PackedTensor,
         raise ValueError("Hq 必须是 Hkv 的整数倍，head_dim 必须为 2 的幂")
     if q.device != key.packed.device or q.device != value.packed.device:
         raise ValueError("query 与 packed K/V 必须在同一设备")
-    if num_splits <= 0 or block_n <= 0 or block_n & (block_n - 1):
-        raise ValueError("num_splits 必须为正，block_n 必须为 2 的幂")
     hq = num_attention_heads
-    splits = min(num_splits, seq_len)
-    split_len = triton.cdiv(seq_len, splits)
+    config = plan_kivi_decode(seq_len, hq, head_dim, _device_sm_count(q.device),
+                              num_splits, block_n, num_warps)
+    splits, split_len = config.num_splits, config.split_len
     q = q.contiguous()
     pm = torch.empty((hq, splits), device=q.device, dtype=torch.float32)
     pl = torch.empty((hq, splits), device=q.device, dtype=torch.float32)
@@ -626,18 +634,21 @@ def _kivi_layer_partial(q, key: PackedTensor, value: PackedTensor,
         GROUP=hq // hkv, KBITS=key.bits, KVPB=_vals_per_byte(key.bits),
         VBITS=value.bits, VVPB=_vals_per_byte(value.bits),
         KGS=key.group_size, VGS=value.group_size,
-        HD=head_dim, BLOCK_N=block_n,
+        HD=head_dim, BLOCK_N=config.block_n, num_warps=config.num_warps,
     )
     return _reduce_splits(pm, pl, pacc)
 
 
 #该函数只能一次计算一个token的注意力
 def fused_phasekv_decode(q: torch.Tensor, tiers, num_attention_heads: int,
-                         num_splits: int = 8, block_n: int = 64) -> torch.Tensor:
+                         num_splits: int | None = None, block_n: int | None = None,
+                         num_warps: int | None = None) -> torch.Tensor:
     """batch=1 的 PhaseKV 注意力：逐段读取 packed KV，再合并 softmax。
 
     ``tiers`` 是 ``PhaseKVCache.layer_tiers`` 的返回值。这里不解压整份 KV，
     但冷层有多个冻结段时会产生多个 Triton launch；后续可进一步融合 launch。
+    并行参数默认按每段实际 KV 长度、head_dim、query heads 和 GPU SM 数自动选择；
+    显式参数只覆盖对应项。复现旧配置可传 num_splits=8, block_n=64, num_warps=4。
     """
     from dataclasses import replace
 
@@ -651,7 +662,7 @@ def fused_phasekv_decode(q: torch.Tensor, tiers, num_attention_heads: int,
     for segment in [tiers.prompt, *tiers.prompt_extensions, *tiers.cold]:
         partials.append(_kivi_layer_partial(
             q, remove_batch(segment.key), remove_batch(segment.value),
-            num_attention_heads, num_splits, block_n))
+            num_attention_heads, num_splits, block_n, num_warps))
     if tiers.hot_len:
         hot_k, hot_v = tiers.hot_views()
         partials.append(_fp16_layer_partial(q, hot_k[0], hot_v[0], num_attention_heads))

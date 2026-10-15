@@ -266,6 +266,27 @@ token 上限、setup/TPOT、峰值显存和常驻 KV 字节，保存同名 `.jso
 PhaseKVCache，后续只输入新用户消息的 chat 模板 token，并将它们按 Prompt 位宽打包。
 `/clear` 才清空会话缓存。`ablate_qwen2_cold.py` 固定同一轮长回复前缀，隔离测试
 冷层量化和 50% token 筛选；结果见 `results/qwen2_phasekv_cold_ablation.md`。
+
+实际 Qwen2 解码路径的 `fused_phasekv_decode` 默认自动选择并行参数。规则位于
+`src/phasekv/kernels/launch_config.py`：按每个 prompt、追加 prompt、cold 段的实际保留
+token 数、query head 数、head_dim 和 GPU SM 数，独立选择拆分数量、tile 大小与 warp 数。
+自动 tile 控制在约 1024 个元素内，以限制反量化时的寄存器压力；拆分边界按 tile 对齐，
+并限制最大拆分数量以控制合并开销。设备信息和规划结果会缓存，不在每个 token 上试跑调参。
+这是有界启发式规则，并非所有 GPU 上的最优配置保证。
+例如 RTX 3070 Ti Laptop（46 SM）、Hq=12、HD=128 时，128/512/8192/28672 token
+分别使用 16/16/64/128 个 split，BLOCK_N=8、num_warps=4。
+可以分别覆盖任意参数；复现旧配置请显式传入
+`num_splits=8, block_n=64, num_warps=4`。
+`python scripts/bench_phasekv_launch.py` 可对照旧配置与自动配置，记录内核时间、
+含 split 合并的时间及编译器寄存器/溢出信息，默认保存到 `results/phasekv_auto_launch.json`。
+该微基准用 CUDA graph 计时，数据驻留 GPU，不代表完整模型的 token 生成速度。
+2026-10-15 本机实测：8K/28K 的单层 packed 内核由 1.69/5.71 ms 降至
+0.18/0.67 ms，编译器报告的 `n_spills` 从 596 降至 0。
+完整 Qwen2-1.5B-Instruct 在相同初始 KV 快照（另有 368 个历史 token）上，
+8 步预热后测 24 步贪心解码，中位速度由 13.5/5.4 提升至 44.5/27.0 token/s。
+这是旧 PhaseKV 参数与自动参数的对照，不含 prefill 和编译耗时；原始数据见
+`results/phasekv_auto_launch.json` 与 `results/phasekv_auto_decode.json`。
+
 当前内置五道有标准答案的题中，100% 保留时 2/4/8-bit 分别命中 3/5、5/5、5/5；
 固定 8-bit 时，100%/75%/50%/25% 保留分别命中 5/5、3/5、0/5、0/5。
 这是用于定位问题的小样本结果，完整逐题输出见 `results/qwen2_phasekv_prompt_ablation.json`。

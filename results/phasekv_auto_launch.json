@@ -1,0 +1,126 @@
+{
+  "gpu": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+  "sm_count": 46,
+  "torch": "2.5.1+cu121",
+  "triton": "3.1.0",
+  "measurement": "CUDA graph, resident random 4-bit KV, single layer, Hq=12 Hkv=2 HD=128; excludes Python overhead",
+  "results": [
+    {
+      "length": 128,
+      "mode": "old",
+      "config": {
+        "num_splits": 8,
+        "split_len": 16,
+        "block_n": 64,
+        "num_warps": 4
+      },
+      "kernel_ms": 0.1705487072467804,
+      "partial_with_reduce_ms": 0.191765695810318,
+      "registers": 255,
+      "spills": 596
+    },
+    {
+      "length": 128,
+      "mode": "auto",
+      "config": {
+        "num_splits": 16,
+        "split_len": 8,
+        "block_n": 8,
+        "num_warps": 4
+      },
+      "kernel_ms": 0.005032356828451157,
+      "partial_with_reduce_ms": 0.019257361069321632,
+      "registers": 124,
+      "spills": 0
+    },
+    {
+      "length": 512,
+      "mode": "old",
+      "config": {
+        "num_splits": 8,
+        "split_len": 64,
+        "block_n": 64,
+        "num_warps": 4
+      },
+      "kernel_ms": 0.17596666514873505,
+      "partial_with_reduce_ms": 0.2001883089542389,
+      "registers": 255,
+      "spills": 596
+    },
+    {
+      "length": 512,
+      "mode": "auto",
+      "config": {
+        "num_splits": 16,
+        "split_len": 32,
+        "block_n": 8,
+        "num_warps": 4
+      },
+      "kernel_ms": 0.014000976458191872,
+      "partial_with_reduce_ms": 0.027739081531763077,
+      "registers": 124,
+      "spills": 0
+    },
+    {
+      "length": 8192,
+      "mode": "old",
+      "config": {
+        "num_splits": 8,
+        "split_len": 1024,
+        "block_n": 64,
+        "num_warps": 4
+      },
+      "kernel_ms": 1.692277193069458,
+      "partial_with_reduce_ms": 1.7527822256088257,
+      "registers": 255,
+      "spills": 596
+    },
+    {
+      "length": 8192,
+      "mode": "auto",
+      "config": {
+        "num_splits": 64,
+        "split_len": 128,
+        "block_n": 8,
+        "num_warps": 4
+      },
+      "kernel_ms": 0.18024106323719025,
+      "partial_with_reduce_ms": 0.19120773673057556,
+      "registers": 124,
+      "spills": 0
+    },
+    {
+      "length": 28672,
+      "mode": "old",
+      "config": {
+        "num_splits": 8,
+        "split_len": 3584,
+        "block_n": 64,
+        "num_warps": 4
+      },
+      "kernel_ms": 5.70782470703125,
+      "partial_with_reduce_ms": 5.912283420562744,
+      "registers": 255,
+      "spills": 596
+    },
+    {
+      "length": 28672,
+      "mode": "auto",
+      "config": {
+        "num_splits": 128,
+        "split_len": 224,
+        "block_n": 8,
+        "num_warps": 4
+      },
+      "kernel_ms": 0.6731471419334412,
+      "partial_with_reduce_ms": 0.6909692883491516,
+      "registers": 124,
+      "spills": 0
+    }
+  ],
+  "date": "2026-10-15T16:53:51.295001+08:00",
+  "source_hashes": {
+    "src/phasekv/kernels/attention_triton.py": "0b9de3442a7628b38a39bbd34d34e27d833b5c4ca3f05c0a22c2d55ce806af7c",
+    "src/phasekv/kernels/launch_config.py": "4ac747750f12e01067c4a0faf6d11809905f4e7dc9e2cfe9cdfbd15008ffa340"
+  }
+}
